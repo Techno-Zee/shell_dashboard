@@ -3,31 +3,88 @@
     <record id="res_config_settings_view_form_inherit_shell_dashboard" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.inherit.shell_dashboard</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app name="shell_dashboard" string="Shell Dashboard" web_icon="shell_dashboard,static/description/icon.png">
-                    
-                    <!-- General Settings -->
-                    <block title="General">
-                        <setting string="View Icon" help="Show icons on KPI tiles">
-                            <field name="view_icon"/>
+                <app name="shell_dashboard" string="Shell Dashboard"
+                    web_icon="shell_dashboard,static/description/icon.png">
+
+                    <!-- Layout Rules -->
+                    <block title="Dashboard Layout Rules" string="Dashboard Layout Rules">
+                        <setting string="Auto Layout"
+                            help="Automatically select layouts based on the number of KPI tiles, charts and tables (following proven UX rules).">
+                            <field name="auto_layout" />
                         </setting>
-                        <setting string="Icon Position" help="Position of icon relative to text">
-                            <field name="icon_position"/>
+                        <setting string="Manual Layout"
+                            help="Force a specific layout when Auto Layout is off.">
+                            <field name="manual_layout" />
+                        </setting>
+                        <separator string="Auto Layout Threshold" colspan="2" />
+                        <setting string="Classic Layout – KPI range" class="d-flex gap-2"
+                            help="Classic layout works best with 2-5 KPI tiles. Adjust min/max here.">
+                            <div class="d-flex gap-2">
+                                <field name="kpi_min_classic" />
+                                <span class="text-lable"> to </span>
+                                <field name="kpi_max_classic" />
+                            </div>
+                        </setting>
+                        <setting string="Grid Layout – total widgets"
+                            help="Grid layout is ideal when total widgets (KPI+charts+tables) are between 4 and 9.">
+                            <div class="d-flex gap-2">
+                                <field name="total_widgets_min_grid" />
+                                <span class="text-lable"> to </span>
+                                <field name="total_widgets_max_grid" />
+                            </div>
+                        </setting>
+                        <setting string="Zonal Layout – min filters"
+                            help="If you have 2 or more active filters, Zonal layout (sidebar filters) is recommended.">
+                            <field name="filter_min_zonal" />
+                        </setting>
+                        <setting string="Drill-Down for single KPI"
+                            help="When only 1 KPI exists, use Drill-Down layout (hero widget + click for details).">
+                            <field name="hero_only_drill_down" />
                         </setting>
                     </block>
 
-                    <!-- Mobile Layout Settings -->
-                    <block title="Mobile Layout">
-                        <setting string="KPI Tile Layout" help="Defines how KPI tiles are arranged on mobile devices">
-                            <field name="mobile_layout_kpi_tile"/>
+                    <!-- KPI Tile Appearance -->
+                    <block title="KPI Tile Appearance">
+                        <setting string="View Icon" help="Show icons on KPI tiles.">
+                            <field name="view_icon" />
                         </setting>
-                        <setting string="Maximum Items" help="Maximum number of KPI tiles when 'Max Items' layout is selected">
-                            <field name="mobile_max_items"/>
+                        <setting string="Icon Position" help="Position of icon relative to text.">
+                            <field name="icon_position" />
                         </setting>
-                        <setting string="Block Type Grouping" help="Group KPI tiles by type on mobile">
-                            <field name="mobile_block_type_grouping"/>
+                    </block>
+
+                    <!-- Mobile Layout Rules -->
+                    <block title="Mobile Layout Rules" string="Mobile Layout Rules">
+                        <setting string="Mobile KPI Tile Layout"
+                            help="Choose layout based on number of KPI tiles:\n- Grid: 2-4 tiles\n- Horizontal Scroll: >4 tiles\n- Max Items: show only top K tiles (set limit below).">
+                            <field name="mobile_layout_kpi_tile" />
+                        </setting>
+                        <setting string="Maximum Items on Mobile"
+                            help="Max KPI tiles shown when using 'Max Items' layout. Follows the '7±2' rule – keep ≤5.">
+                            <field name="mobile_max_items" />
+                        </setting>
+                        <setting string="Block Type Grouping"
+                            help="Group KPI by category on mobile. Helps readability when >3 tiles.">
+                            <field name="mobile_block_type_grouping" />
+                        </setting>
+                    </block>
+
+                    <!-- Table Settings -->
+                    <block title="Table Settings" string="Table Settings">
+                        <setting string="Default Table Rows"
+                            help="Number of rows per table. Keep ≤15 to avoid excessive scrolling (above the fold rule).">
+                            <field name="table_default_rows" />
+                        </setting>
+                        <setting string="Table Pagination"
+                            help="Pagination style:\n- Basic: Prev/Next for small datasets\n- Page Numbers: for >50 rows\n- Infinite Scroll: for mobile or continuous browsing.">
+                            <field name="table_pagination" />
+                        </setting>
+                        <setting string="Auto Table Height"
+                            help="Automatically limit table height to max 15 rows. Prevents broken layouts on large tables.">
+                            <field name="table_auto_height" />
                         </setting>
                     </block>
 
