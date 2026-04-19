@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_shell_dashboard" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.shell_dashboard</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app name="shell_dashboard" string="Shell Dashboard" web_icon="shell_dashboard,static/description/icon.png">
+                    
+                    <!-- General Settings -->
+                    <block title="General">
+                        <setting string="View Icon" help="Show icons on KPI tiles">
+                            <field name="view_icon"/>
+                        </setting>
+                        <setting string="Icon Position" help="Position of icon relative to text">
+                            <field name="icon_position"/>
+                        </setting>
+                    </block>
+
+                    <!-- Mobile Layout Settings -->
+                    <block title="Mobile Layout">
+                        <setting string="KPI Tile Layout" help="Defines how KPI tiles are arranged on mobile devices">
+                            <field name="mobile_layout_kpi_tile"/>
+                        </setting>
+                        <setting string="Maximum Items" help="Maximum number of KPI tiles when 'Max Items' layout is selected">
+                            <field name="mobile_max_items"/>
+                        </setting>
+                        <setting string="Block Type Grouping" help="Group KPI tiles by type on mobile">
+                            <field name="mobile_block_type_grouping"/>
+                        </setting>
+                    </block>
+
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
