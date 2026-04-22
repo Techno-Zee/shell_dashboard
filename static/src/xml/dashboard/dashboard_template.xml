@@ -11,33 +11,48 @@
                             <i class="fa fa-plus me-1"/> Add Block
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('tile')">
-                                <i class="fa fa-square me-2"/> Tile
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('kpi')">
-                                <i class="fa fa-arrow-up me-2"/> KPI
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'bar')">
-                                <i class="fa fa-bar-chart me-2"/> Bar Chart
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'line')">
-                                <i class="fa fa-line-chart me-2"/> Line Chart
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'pie')">
-                                <i class="fa fa-pie-chart me-2"/> Pie Chart
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'doughnut')">
-                                <i class="fa fa-circle me-2"/> Donut Chart
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'radar')">
-                                <i class="fa fa-bullseye me-2"/> Radar Chart
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('list')">
-                                <i class="fa fa-table me-2"/> Table
-                            </a></li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('tile')">
+                                    <i class="fa fa-square me-2"/> Tile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('kpi')">
+                                    <i class="fa fa-arrow-up me-2"/> KPI
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'bar')">
+                                    <i class="fa fa-bar-chart me-2"/> Bar Chart
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'line')">
+                                    <i class="fa fa-line-chart me-2"/> Line Chart
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'pie')">
+                                    <i class="fa fa-pie-chart me-2"/> Pie Chart
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'doughnut')">
+                                    <i class="fa fa-circle me-2"/> Donut Chart
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'radar')">
+                                    <i class="fa fa-bullseye me-2"/> Radar Chart
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('list')">
+                                    <i class="fa fa-table me-2"/> Table
+                                </a>
+                            </li>
                         </ul>
                     </div>
-                    
                     <!-- <button t-if="state.IsAdmin" 
                             t-on-click="toggleEditMode" 
                             class="btn" 
@@ -45,25 +60,29 @@
                         <i class="fa" t-att-class="state.editMode ? 'fa-save' : 'fa-edit'"/>
                         <span t-esc="state.editMode ? ' Save Layout' : ' Edit Layout'"/>
                     </button> -->
-                    
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="fa fa-download me-1"/> Export
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="exportAsPDF">
-                                <i class="fa fa-file-pdf-o me-2"/> PDF
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="exportAsPNG">
-                                <i class="fa fa-file-image-o me-2"/> PNG
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" t-on-click.prevent="exportAsCSV">
-                                <i class="fa fa-file-excel-o me-2"/> CSV
-                            </a></li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="exportAsPDF">
+                                    <i class="fa fa-file-pdf-o me-2"/> PDF
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="exportAsPNG">
+                                    <i class="fa fa-file-image-o me-2"/> PNG
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" t-on-click.prevent="exportAsCSV">
+                                    <i class="fa fa-file-excel-o me-2"/> CSV
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
-
                 <!-- Right Section: Filters -->
                 <div class="d-flex gap-2 align-items-center">
                     <div class="date-filter-container position-relative">
@@ -72,6 +91,16 @@
                             <span t-esc="getDateRangeText()"/>
                         </button>
                         <div t-if="state.showDatePicker" class="date-picker-popup position-absolute bg-white border rounded p-3 shadow">
+                            <div class="mb-2">
+                                <label class="form-label small">Date Option</label>
+                                <select class="form-control form-control-sm">
+                                    <option>Select range</option>
+                                    <option value="this_month">This month</option>
+                                    <option value="last_month">Last month</option>
+                                    <option value="this_year">This year</option>
+                                    <option value="last_year">Last year</option>
+                                </select>
+                            </div>
                             <div class="md-flex gap-2 mb-2">
                                 <div>
                                     <label class="form-label small">From</label>
@@ -94,21 +123,16 @@
                             </div>
                         </div>
                     </div>
-                    
                     <button t-on-click="toggleAutoRefresh" class="btn" 
                             t-att-class="state.autoRefresh ? 'btn-warning' : 'btn-outline-secondary'">
                         <i class="fa" t-att-class="state.autoRefresh ? 'fa-pause' : 'fa-play-circle'"/>
                         <span t-if="state.autoRefresh" t-esc="' ' + state.refreshCountdown + 's'"/>
                     </button>
-                    
                     <button t-on-click="refreshDashboard" class="btn btn-outline-secondary">
                         <i class="fa fa-refresh"/>
                     </button>
                 </div>
-                
-                
             </div>
-
             <!-- Dashboard Content -->
             <div class="dashboard-content p-3 mb-5">
                 <div t-ref="gridContainer" class="grid-stack">
@@ -119,7 +143,6 @@
                             t-att-gs-y="block.grid_position.y"
                             t-att-gs-w="block.grid_position.w"
                             t-att-gs-h="block.grid_position.h">
-
                             <div t-attf-style="height: {{ block.type == 'list' ? 'fit-content' : '' }}" class="grid-stack-item-content ">
                                 <t t-component="resolveComponent(block.type)"
                                 t-props="{
@@ -131,7 +154,6 @@
                     </t>
                 </div>
             </div>
-
             <!-- Loading Overlay -->
             <div t-if="state.loading" class="loading-overlay">
                 <div class="spinner-border text-primary" role="status">

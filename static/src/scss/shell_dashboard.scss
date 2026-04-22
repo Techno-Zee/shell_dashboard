@@ -259,11 +259,15 @@
 }
 
 // Responsive adjustments
+@media (max-width: 500px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+}
 @media (max-width: 768px) {
   .shell-dashboard-container {
-    .dashboard-header {
-      flex-wrap: wrap;
-      gap: 10px;
 
       .date-filter-container {
         order: 3;
@@ -278,7 +282,6 @@
         }
       }
     }
-  }
 }
 
 // Animation for grid items
