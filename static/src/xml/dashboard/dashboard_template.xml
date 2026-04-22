@@ -15,7 +15,7 @@
                                 <i class="fa fa-square me-2"/> Tile
                             </a></li>
                             <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('kpi')">
-                                <i class="fa fa-chart-line me-2"/> KPI
+                                <i class="fa fa-arrow-up me-2"/> KPI
                             </a></li>
                             <li><a class="dropdown-item" href="#" t-on-click.prevent="() => onClickAddItem('graph', 'bar')">
                                 <i class="fa fa-bar-chart me-2"/> Bar Chart
@@ -38,13 +38,13 @@
                         </ul>
                     </div>
                     
-                    <button t-if="state.IsAdmin" 
+                    <!-- <button t-if="state.IsAdmin" 
                             t-on-click="toggleEditMode" 
                             class="btn" 
                             t-att-class="state.editMode ? 'btn-success' : 'btn-outline-secondary'">
                         <i class="fa" t-att-class="state.editMode ? 'fa-save' : 'fa-edit'"/>
                         <span t-esc="state.editMode ? ' Save Layout' : ' Edit Layout'"/>
-                    </button>
+                    </button> -->
                     
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -72,7 +72,7 @@
                             <span t-esc="getDateRangeText()"/>
                         </button>
                         <div t-if="state.showDatePicker" class="date-picker-popup position-absolute bg-white border rounded p-3 shadow">
-                            <div class="d-flex gap-2 mb-2">
+                            <div class="md-flex gap-2 mb-2">
                                 <div>
                                     <label class="form-label small">From</label>
                                     <input type="date" class="form-control form-control-sm" 
