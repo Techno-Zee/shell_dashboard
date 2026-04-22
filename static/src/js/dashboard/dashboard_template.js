@@ -205,11 +205,11 @@ export class ShellDashboard extends Component {
 
 
 
-    toggleEditMode() {
-        this.state.editMode = !this.state.editMode;
+    // toggleEditMode() {
+    //     this.state.editMode = !this.state.editMode;
 
-        this.setEditMode(this.state.editMode);
-    }
+    //     this.setEditMode(this.state.editMode);
+    // }
 
     async saveLayout() {
         if (!this.grid) return;
