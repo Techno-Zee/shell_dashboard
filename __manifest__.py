@@ -39,7 +39,7 @@ yang dibangun dengan jQuery untuk kebutuhan visualisasi data di backend Odoo.
 
     'assets': {
         'web.assets_backend': [
-            
+
             # Online Linbaries
             'shell_dashboard/static/lib/chartjs/chart.umd.min.js',
             'shell_dashboard/static/lib/html2pdf/html2pdf.bundle.min.js',
@@ -47,7 +47,6 @@ yang dibangun dengan jQuery untuk kebutuhan visualisasi data di backend Odoo.
             'shell_dashboard/static/lib/gridstack/dist/gridstack.min.css',
             'shell_dashboard/static/lib/jspdf/dist/jspdf.umd.min.js',
             'shell_dashboard/static/src/font/fontawesome4-icons.json',
-            
             
             # Libraries 
             'shell_dashboard/static/src/js/**/*.js',
