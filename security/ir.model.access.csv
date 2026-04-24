@@ -6,3 +6,5 @@ access_dashboard_block_admin,access_dashboard_block_admin,model_dashboard_block,
 access_dashboard_menu_user,access_dashboard_menu_user,model_dashboard_menu,group_dashboard_user,1,0,0,0
 access_dashboard_menu_manager,access_dashboard_menu_manager,model_dashboard_menu,group_dashboard_manager,1,1,0,0
 access_dashboard_menu_admin,access_dashboard_menu_admin,model_dashboard_menu,group_dashboard_admin,1,1,1,1
+
+access_dashboard_menu_user,access_dashboard_menu_user,model_dashboard_menu,base.group_user,1,0,0,0

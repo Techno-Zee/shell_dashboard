@@ -101,7 +101,7 @@ class DashboardBlock(models.Model):
     # For Tiles/KPI
     fa_icon = fields.Char(
         string="Icon", 
-        default="fa-cube",
+        default="fa fa-home",
         help="Font Awesome icon class (e.g., 'fa-users', 'fa-chart-line')"
     )
     icon_size = fields.Selection(
