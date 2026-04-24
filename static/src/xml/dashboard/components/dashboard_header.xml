@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="shell_dashboard.DashboardHeader" owl="1">
+        <div class="dashboard-header d-flex justify-content-between align-items-center p-3 border-bottom">
+            <div class="d-flex gap-2 align-items-center">
+                <!-- Add Block -->
+                <div t-att-class="'dropdown ' + (props.isAdmin ? '' : 'd-none')">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fa fa-plus me-1"/> Add Block
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li t-foreach="blockTypes" t-as="type" t-key="type.id">
+                            <a class="dropdown-item" href="#" t-on-click.prevent="() => props.onAddItem(type.name, type.subtype)">
+                                <i t-att-class="type.icon"/> <t t-esc="type.label"/>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Export Menu -->
+                <ExportMenu onExportPDF="props.onExportPDF" onExportPNG="props.onExportPNG" onExportCSV="props.onExportCSV"/>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <!-- Date Filter -->
+                <DateFilter dateRangeText="props.dateRangeText"
+                            showPicker="props.showDatePicker"
+                            startDate="props.startDate"
+                            endDate="props.endDate"
+                            onToggle="() => props.toggleDatePicker()"
+                            onApply="props.applyDateFilter"
+                            onReset="props.resetDateFilter"/>
+                <!-- Auto Refresh & Refresh -->
+                <button t-on-click="props.onToggleAutoRefresh" class="btn"
+                        t-att-class="props.autoRefresh ? 'btn-warning' : 'btn-outline-secondary'">
+                    <i class="fa" t-att-class="props.autoRefresh ? 'fa-pause' : 'fa-play-circle'"/>
+                    <span t-if="props.autoRefresh" t-esc="' ' + props.refreshCountdown + 's'"/>
+                </button>
+                <button t-on-click="props.onRefresh" class="btn btn-outline-secondary">
+                    <i class="fa fa-refresh"/>
+                </button>
+            </div>
+        </div>
+    </t>
+</templates>

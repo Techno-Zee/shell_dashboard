@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="shell_dashboard.DateFilter" owl="1">
+        <div class="date-filter-container position-relative">
+            <button class="btn btn-outline-primary" t-on-click="props.onToggle">
+                <i class="fa fa-calendar me-1"/>
+                <span t-esc="props.dateRangeText"/>
+            </button>
+            <div t-if="props.showPicker" class="date-picker-popup position-absolute bg-white border rounded p-3 shadow">
+                <div class="mb-2">
+                    <label class="form-label small">Date Option</label>
+                    <select class="form-control form-control-sm">
+                        <option>Select range</option>
+                        ...
+                    </select>
+                </div>
+                <div class="md-flex gap-2 mb-2">
+                    <div>
+                        <label class="form-label small">From</label>
+                        <input type="date" class="form-control form-control-sm" t-model="props.startDate"/>
+                    </div>
+                    <div>
+                        <label class="form-label small">To</label>
+                        <input type="date" class="form-control form-control-sm" t-model="props.endDate"/>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button t-on-click="props.onApply" class="btn btn-sm btn-primary flex-grow-1">Apply</button>
+                    <button t-on-click="props.onReset" class="btn btn-sm btn-outline-secondary">Reset</button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

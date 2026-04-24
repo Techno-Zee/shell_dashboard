@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="shell_dashboard.Dashboard" owl="1">
+        <div class="shell-dashboard-container">
+            <DashboardHeader isAdmin="state.isAdmin"
+                             onAddItem="onClickAddItem"
+                             onExportPDF="exportAsPDF"
+                             onExportPNG="exportAsPNG"
+                             onExportCSV="exportAsCSV"
+                             dateRangeText="getDateRangeText()"
+                             showDatePicker="state.showDatePicker"
+                             startDate="state.startDate"
+                             endDate="state.endDate"
+                             toggleDatePicker="() => toggleDatePicker()"
+                             applyDateFilter="applyDateFilter"
+                             resetDateFilter="resetDateFilter"
+                             autoRefresh="state.autoRefresh"
+                             refreshCountdown="state.refreshCountdown"
+                             onToggleAutoRefresh="() => toggleAutoRefresh()"
+                             onRefresh="() => refreshDashboard()"/>
+
+            <div class="dashboard-content p-3 mb-5">
+                <div class="dashboard-blocks" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px;">
+                    <t t-foreach="state.blocks" t-as="block" t-key="block.id">
+                        <div class="dashboard-block-item">
+                            <t t-component="resolveComponent(block.type)"
+                               t-props="{ block: block, isEditable: false }"/>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="loading-overlay">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

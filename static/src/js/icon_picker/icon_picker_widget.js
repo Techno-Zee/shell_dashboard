@@ -24,7 +24,7 @@ export class IconPickerField extends Component {
         this.loadIcons = async () => {
             try {
                 const response = await fetch(
-                    "/shell_dashboard/static/src/font/fontawesome4-icons.json"
+                    "/shell_dashboard/static/src/data/fontawesome4-icons.json"
                 );
                 if (!response.ok) {
                     throw new Error("Failed to load icon list");

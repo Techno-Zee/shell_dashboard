@@ -33,25 +33,19 @@ yang dibangun dengan jQuery untuk kebutuhan visualisasi data di backend Odoo.
         'views/shell_menu.xml'
     ],
 
-    'demo': [
-        'demo/demo.xml',
-    ],
-
     'assets': {
         'web.assets_backend': [
 
             # Online Linbaries
             'shell_dashboard/static/lib/chartjs/chart.umd.min.js',
-            'shell_dashboard/static/lib/html2pdf/html2pdf.bundle.min.js',
-            'shell_dashboard/static/lib/gridstack/dist/gridstack-all.js',
-            'shell_dashboard/static/lib/gridstack/dist/gridstack.min.css',
-            'shell_dashboard/static/lib/jspdf/dist/jspdf.umd.min.js',
-            'shell_dashboard/static/src/font/fontawesome4-icons.json',
+            'shell_dashboard/static/src/data/fontawesome4-icons.json',
             
             # Libraries 
+            'shell_dashboard/static/src/js/dashboard/dashboard_main.js',
+            'shell_dashboard/static/src/js/dashboard/components/*.js',
             'shell_dashboard/static/src/js/**/*.js',
-            'shell_dashboard/static/src/xml/**/*.xml',
             'shell_dashboard/static/src/scss/**/*.scss',
+            'shell_dashboard/static/src/xml/**/*.xml',
         ],
     },
 

@@ -24,25 +24,6 @@
     flex: 1;
     overflow: auto;
     background: #f5f7fa;
-
-    .grid-stack {
-      min-height: 100%;
-
-      .grid-stack-item {
-        transition: all 0.3s ease;
-        margin: 10px 0;
-
-        .grid-stack-item-content {
-          background: white;
-          border-radius: 8px;
-          overflow: hidden;
-
-          &:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          }
-        }
-      }
-    }
   }
 
   .loading-overlay {
@@ -294,9 +275,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.grid-stack-item {
-  animation: fadeIn 0.3s ease;
-  margin: 10px 0;
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="shell_dashboard.ExportMenu" owl="1">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fa fa-download me-1"/> Export
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" t-on-click.prevent="props.onExportPDF"><i class="fa fa-file-pdf-o me-2"/> PDF</a></li>
+                <li><a class="dropdown-item" href="#" t-on-click.prevent="props.onExportPNG"><i class="fa fa-file-image-o me-2"/> PNG</a></li>
+                <li><a class="dropdown-item" href="#" t-on-click.prevent="props.onExportCSV"><i class="fa fa-file-excel-o me-2"/> CSV</a></li>
+            </ul>
+        </div>
+    </t>
+</templates>
