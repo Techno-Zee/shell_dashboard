@@ -164,53 +164,6 @@ export class DashboardChart extends Component {
         }
     }
 
-    async exportChart(format) {
-        console.log('exportChart called with', format);
-        if (!this.chart) return;
-
-        try {
-            const canvas = this.chartCanvas.el;
-
-            if (format === 'png') {
-                const link = document.createElement('a');
-                link.download = `${this.props.block.name}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-
-            } else if (format === 'pdf') {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('landscape');
-                const imgData = canvas.toDataURL('image/png');
-                pdf.addImage(imgData, 'PNG', 10, 10, 280, 150);
-                pdf.save(`${this.props.block.name}.pdf`);
-
-            } else if (format === 'csv') {
-                const block = this.props.block;
-                let csvContent = "data:text/csv;charset=utf-8,";
-
-                // Add headers
-                csvContent += "Label,Value\n";
-
-                // Add data
-                block.data.labels?.forEach((label, index) => {
-                    const value = block.data.datasets?.[0]?.data?.[index] || 0;
-                    csvContent += `"${label}",${value}\n`;
-                });
-
-                const link = document.createElement('a');
-                link.href = encodeURI(csvContent);
-                link.download = `${this.props.block.name}.csv`;
-                link.click();
-            }
-
-            this.notification.add(`Exported as ${format.toUpperCase()}`, { type: "success" });
-
-        } catch (error) {
-            console.error("Error exporting chart:", error);
-            this.notification.add("Failed to export chart", { type: "danger" });
-        }
-    }
-
     async deleteBlock() {
         try {
             const confirmed = await this.dialog.confirm("Are you sure you want to delete this chart?", {

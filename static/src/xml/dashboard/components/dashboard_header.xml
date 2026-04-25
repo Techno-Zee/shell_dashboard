@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
     <t t-name="shell_dashboard.DashboardHeader" owl="1">
-        <div class="dashboard-header d-flex justify-content-between align-items-center p-3 border-bottom">
+        <div class="dashboard-header d-flex justify-content-between align-items-center p-3 pt-2 border-bottom">
             <div class="d-flex gap-2 align-items-center">
                 <!-- Add Block -->
                 <div t-att-class="'dropdown ' + (props.isAdmin ? '' : 'd-none')">
