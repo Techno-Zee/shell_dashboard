@@ -38,7 +38,7 @@ export class DashboardTile extends Component {
                 res_id: this.props.block.id,
                 view_mode: 'form',
                 views: [[false, 'form']],
-                target: 'current'
+                target: 'new'
             });
         } catch (error) {
             console.error("Error configuring block:", error);
