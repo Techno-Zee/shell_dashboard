@@ -46,7 +46,10 @@
       font-size: 2rem;
     }
   }
-  .btn-group {
+  .card-header {
+    position: absolute;
+    top: 0;
+    width: 100%;
     opacity: 0;
     visibility: hidden;
     transition:
@@ -54,7 +57,7 @@
       visibility 0s linear 0.2s;
   }
 
-  &:hover .btn-group {
+  &:hover .card-header {
     opacity: 1;
     visibility: visible;
     transition:
