@@ -112,6 +112,28 @@ class ResConfigSettings(models.TransientModel):
         help="Automatically adjust table height based on number of rows (max 15 rows). Prevents excessive scrolling."
     )
 
+    kpi_template = fields.Selection(
+        selection=[
+        ('shell_dashboard.KPIRingProgress', 'KPI Ring Progress'),
+        ('shell_dashboard.KPITrendBadgeIcon', 'KPI Trend Badge Icon'),
+        ('shell_dashboard.KPILinearProgress', 'KPI Linear Progress'),
+    ],
+        string='Default KPI Template',
+        config_parameter='shell_dashboard.default_kpi_template',  # simpan di ir.config_parameter
+        help="Pilih template default untuk blok KPI di dashboard."
+    )
+
+    tile_template = fields.Selection(
+        selection=[
+        ('shell_dashboard.TileIconCircle', 'Tile Icon Circle'),
+        ('shell_dashboard.TileStatsWithTrend', 'Tile Stats with Trend'),
+        ('shell_dashboard.TileCompactSubvalue', 'Tile Compact Subvalue'),
+    ],
+        string='Default Tile Template',
+        config_parameter='shell_dashboard.default_tile_template',
+        help="Pilih template default untuk blok Tile di dashboard."
+    )
+
     @api.model
     def get_values(self):
         res = super(ResConfigSettings, self).get_values()
@@ -127,11 +149,18 @@ class ResConfigSettings(models.TransientModel):
             'dashboard.mobile_layout_kpi_tile', 'dashboard.mobile_max_items',
             'dashboard.mobile_block_type_grouping',
             'dashboard.table_default_rows', 'dashboard.table_pagination', 'dashboard.table_auto_height',
+            'shell_dashboard.default_kpi_template',   # key untuk kpi_template
+            'shell_dashboard.default_tile_template',  # key untuk tile_template
         ]
         for key in keys:
-            field_name = key.replace('dashboard.', '')
+            # Mapping key ke field name
+            if key == 'shell_dashboard.default_kpi_template':
+                field_name = 'kpi_template'
+            elif key == 'shell_dashboard.default_tile_template':
+                field_name = 'tile_template'
+            else:
+                field_name = key.replace('dashboard.', '')
             res[field_name] = params.get_param(key, default=self._default_value(key))
-
         return res
 
     def _default_value(self, key):
@@ -153,6 +182,8 @@ class ResConfigSettings(models.TransientModel):
             'dashboard.table_default_rows': 10,
             'dashboard.table_pagination': 'basic',
             'dashboard.table_auto_height': True,
+            'shell_dashboard.default_kpi_template': 'shell_dashboard.KPIRingProgress',
+            'shell_dashboard.default_tile_template': 'shell_dashboard.TileIconCircle',
         }
         return defaults.get(key, None)
 
@@ -176,3 +207,6 @@ class ResConfigSettings(models.TransientModel):
         params.set_param('dashboard.table_default_rows', str(self.table_default_rows))
         params.set_param('dashboard.table_pagination', self.table_pagination)
         params.set_param('dashboard.table_auto_height', str(self.table_auto_height))
+                # Simpan kedua template
+        params.set_param('shell_dashboard.default_kpi_template', self.kpi_template or '')
+        params.set_param('shell_dashboard.default_tile_template', self.tile_template or '')

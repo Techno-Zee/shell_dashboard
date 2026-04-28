@@ -15,8 +15,8 @@ export class DashboardHeader extends Component {
         // Props untuk DateFilter
         dateRangeText: String,
         showDatePicker: Boolean,
-        startDate: Object,
-        endDate: Object,
+        startDate: { type: String, optional: true },   // ✅ ubah dari Object
+        endDate: { type: String, optional: true },
         toggleDatePicker: Function,
         applyDateFilter: Function,
         resetDateFilter: Function,

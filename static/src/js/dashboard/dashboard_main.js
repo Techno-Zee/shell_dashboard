@@ -33,8 +33,8 @@ export class ShellDashboard extends Component {
             autoRefresh: false,
             refreshCountdown: 30,
             showDatePicker: false,
-            startDate: null,
-            endDate: null,
+            startDate: '',
+            endDate: '',
             name: session.partner_display_name,
             isAdmin: false,
             isManager: false,
@@ -142,8 +142,8 @@ export class ShellDashboard extends Component {
     };
 
     resetDateFilter = () => {
-        this.state.startDate = null;
-        this.state.endDate = null;
+        this.state.startDate = '';
+        this.state.endDate = '';
         this.state.showDatePicker = false;
         this.initializeDashboard();
     };

@@ -1,3 +1,8 @@
+// ============================================
+// SHELL DASHBOARD - FULLY COMPATIBLE
+// Mendukung 3 KPI + 3 Tile template tanpa bentrok
+// ============================================
+
 .shell-dashboard-container {
   height: 100vh;
   display: flex;
@@ -39,46 +44,66 @@
   }
 }
 
+/* ============================================
+   BASE CARD – TIDAK MENGGANGGU LAYOUT TEMPLATE
+   ============================================ */
 .card {
-  position: relative; // Opsional, untuk memastikan tombol absolute jika diperlukan
-  .card-body .progress-ring{
-    i{
-      font-size: 2rem;
+  position: relative;
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid rgba(203, 213, 225, 0.4);
+  transition: all 0.2s ease;
+
+  // HEADER: sekarang relative, tidak merusak aliran
+  .card-header {
+    position: relative;      // <-- diubah dari absolute
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border-bottom: 1px solid #eef2f6;
+    opacity: 1;              // <-- selalu terlihat
+    visibility: visible;
+    transition: none;
+    
+    // Tapi tombol aksi (gear, trash) bisa muncul hover effect
+    .btn-group .btn {
+      transition: all 0.2s;
     }
   }
-  .btn-group {
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.2s ease,
-      visibility 0s linear 0.2s;
-  }
 
-  &:hover .btn-group {
-    opacity: 1;
-    visibility: visible;
-    transition:
-      opacity 0.2s ease,
-      visibility 0s linear 0s;
-  }
+  // OVERLAY: area double-click (tidak menutupi header)
   .overlay {
     position: absolute;
-    top: 44.5px;
+    top: 0;
     left: 0;
     width: 100%;
-    bottom: 0;
+    height: 100%;
     cursor: pointer;
     opacity: 0;
-
+    z-index: 5;
+    border-radius: inherit;
+    transition: opacity 0.2s;
+    
     &:hover {
-      background: rgba(0, 0, 0, 0.05);
+      background: rgba(0, 0, 0, 0.02);
       opacity: 1;
     }
   }
+
+  // Efek hover pada card (opsional, tidak merusak)
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1);
+  }
 }
 
+/* ============================================
+   RING PROGRESS (untuk template KPI Ring Progress)
+   ============================================ */
 .progress-ring {
-  width: 92px; // Anda bebas ubah ini
+  width: 80px;
   aspect-ratio: 1;
   position: relative;
 
@@ -90,7 +115,7 @@
 
   circle {
     fill: none;
-    stroke-width: 8;
+    stroke-width: 7;
     stroke-linecap: round;
   }
 
@@ -100,19 +125,67 @@
 
   .progress-bar {
     transition: stroke-dashoffset 0.6s ease;
-    stroke: #71639e;
+    stroke: #4318ff; // warna default, bisa di-override inline
+  }
+
+  .progress-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 1.6rem;
   }
 }
 
-.progress-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+/* ============================================
+   KUSTOMISASI TAMBAHAN UNTUK TREND & BADGE
+   ============================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.65rem;
+  font-weight: 500;
+  border-radius: 2rem;
 }
 
-// Responsive adjustments
+.trend-up {
+  background: #e6f7ec;
+  color: #15803d;
+}
+.trend-down {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.kpi-percent {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  border-radius: 2rem;
+  padding: 0.2rem 0.6rem;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+/* ============================================
+   PROGRESS BAR LINEAR (untuk KPI Linear Progress)
+   ============================================ */
+.progress {
+  background-color: #e9ecef;
+  border-radius: 20px;
+  height: 8px;
+  overflow: hidden;
+}
+.progress-bar {
+  transition: width 0.4s ease;
+  border-radius: 20px;
+}
+
+/* ============================================
+   RESPONSIVE (tetap pakai milik Anda)
+   ============================================ */
 @media (max-width: 500px) {
   .dashboard-header {
     flex-direction: column;
@@ -136,7 +209,9 @@
   }
 }
 
-// Animation for grid items
+/* ============================================
+   ANIMASI
+   ============================================ */
 @keyframes fadeIn {
   from {
     opacity: 0;
