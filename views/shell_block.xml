@@ -110,7 +110,7 @@
                         <page string="Advanced">
                             <group>
                                 <field name="is_public" />
-                                <field name="client_action_id" invisible="1" />
+                                <field name="client_action_id" />
                                 <field name="last_update" readonly="1" />
                             </group>
                         </page>
