@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="shell_dashboard.KPILinearProgress" owl="1">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center p-2 border-bottom">
+                <h6 t-esc="props.block.name" class="mb-0 fw-bold" />
+                <div class="btn-group btn-group-sm">
+                    <button t-on-click="configureBlock" class="btn btn-sm btn-outline-secondary">
+                        <i class="fa fa-cog" />
+                    </button>
+                    <button t-on-click="deleteBlock" class="btn btn-sm btn-outline-danger ms-1">
+                        <i class="fa fa-trash" />
+                    </button>
+                </div>
+            </div>
+            <div t-att-style="'background-color: ' + props.block.config.colors.background" class="card-body px-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="display-5 fw-bold" t-att-style="'color:' + props.block.config.colors.value">
+                            <t t-esc="props.block.data.formatted_value" />
+                        </div>
+                        <div class="small text-muted mt-1"><t t-esc="props.block.name" /></div>
+                    </div>
+                    <div class="text-end">
+                        <div class="badge bg-light text-dark">
+                            <t t-esc="Math.min(props.block.data.achievement,100).toFixed(0)" />% target
+                        </div>
+                        <div class="small mt-1">
+                            <i t-att-class="getTrendIcon(props.block.data.trend_direction)" />
+                            <t t-esc="Math.abs(props.block.data.trend).toFixed(1) + '%'" />
+                        </div>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 8px;">
+                    <div class="progress-bar" t-att-style="'width: ' + Math.min(props.block.data.achievement,100) + '%; background-color:' + props.block.config.colors.progress" 
+                         t-att-aria-valuenow="props.block.data.achievement" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div t-on-dblclick.stop="openRecords" class="overlay" />
+            </div>
+        </div>
+    </t>
+</templates>
