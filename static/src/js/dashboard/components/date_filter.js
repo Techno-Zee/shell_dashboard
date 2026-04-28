@@ -9,8 +9,8 @@ export class DateFilter extends Component {
         onApply: Function,
         onReset: Function,
         showPicker: { type: Boolean, optional: true },
-        startDate: { type: Object, optional: true },   // bisa Date atau null
-        endDate: { type: Object, optional: true },
+        startDate: { type: String, optional: true },   // ✅ ubah dari Object
+        endDate: { type: String, optional: true },
     };
     static defaultProps = {
         dateRangeText: "Select Date Range",

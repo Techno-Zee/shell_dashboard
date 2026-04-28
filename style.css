@@ -1,0 +1,97 @@
+/* Layout Dasar */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7fe;
+    padding: 30px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    width: 250px;
+    box-sizing: border-box;
+}
+
+/* 1. Card Putih Minimalis */
+.card-white {
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-white h4 { margin: 0; color: #8f9bba; font-size: 13px; font-weight: 500; }
+.card-white h2 { margin: 8px 0 0 0; color: #2b3674; font-size: 28px; }
+.card-white .circle-badge {
+    color: #4318ff;
+    font-weight: bold;
+    font-size: 13px;
+    border: 3px solid #4318ff;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. Card Solid Hijau */
+.card-green {
+    background: #115b42;
+    color: #ffffff;
+    position: relative;
+}
+.card-green h4 { margin: 0; font-size: 14px; font-weight: 500; opacity: 0.9; }
+.card-green h2 { margin: 12px 0; font-size: 36px; }
+.card-green .trend {
+    font-size: 11px;
+    background: rgba(255,255,255,0.15);
+    padding: 6px 10px;
+    border-radius: 8px;
+    display: inline-block;
+}
+.card-green .icon-arrow {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: #ffffff;
+    color: #115b42;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* 3. Card Gelap Elegan */
+.card-dark {
+    background: #212529;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+.card-dark .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.card-dark .icon-box {
+    background: #ffffff;
+    color: #212529;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+.card-dark .trend-up { color: #20c997; font-size: 14px; font-weight: bold; }
+.card-dark h2 { margin: 0; font-size: 28px; }
+.card-dark p { margin: 5px 0 0 0; color: #adb5bd; font-size: 13px; }

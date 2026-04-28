@@ -20,7 +20,7 @@
                             <field name="manual_layout" />
                         </setting>
                         <separator string="Auto Layout Threshold" colspan="2" />
-                        <setting string="Classic Layout – KPI range" class="d-flex gap-2"
+                        <setting string="Classic Layout – KPI range"
                             help="Classic layout works best with 2-5 KPI tiles. Adjust min/max here.">
                             <div class="d-flex gap-2">
                                 <field name="kpi_min_classic" />
@@ -53,6 +53,16 @@
                         </setting>
                         <setting string="Icon Position" help="Position of icon relative to text.">
                             <field name="icon_position" />
+                        </setting>
+                    </block>
+
+                    <!-- KPI Tile Design -->
+                    <block title="KPI Tile Design">
+                    <setting string="View Icon" help="Pilih template default untuk menampilkan kartu KPI pada dashboard.">
+                        <field name="kpi_template"/>
+                    </setting>
+                    <setting string="Icon Position" help="Pilih template default untuk menampilkan kartu Tile pada dashboard.">
+                        <field name="tile_template"/>
                         </setting>
                     </block>
 

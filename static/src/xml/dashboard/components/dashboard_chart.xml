@@ -12,33 +12,6 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a t-on-click="configureBlock" class="dropdown-item" href="#">
-                                    <i class="fa fa-cog me-2" />
-                                    Configure
-                                </a>
-                            </li>
-                            <li>
-                                <a t-on-click="(ev) => exportChart('png')" class="dropdown-item" href="#">
-                                    <i class="fa fa-image me-2" />
-                                    Export as PNG
-                                </a>
-                            </li>
-                            <li>
-                                <a t-on-click="(ev) => exportChart('pdf')" class="dropdown-item" href="#">
-                                    <i class="fa fa-file-pdf-o me-2" />
-                                    Export as PDF
-                                </a>
-                            </li>
-                            <li>
-                                <a t-on-click="(ev) => exportChart('csv')" class="dropdown-item" href="#">
-                                    <i class="fa fa-file-excel-o me-2" />
-                                    Export as CSV
-                                </a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
-                            <li>
                                 <a t-on-click="deleteBlock" class="dropdown-item text-danger" href="#">
                                     <i class="fa fa-trash me-2" />
                                     Delete

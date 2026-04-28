@@ -1,3 +1,8 @@
+// ============================================
+// SHELL DASHBOARD - FULLY COMPATIBLE
+// Mendukung 3 KPI + 3 Tile template tanpa bentrok
+// ============================================
+
 .shell-dashboard-container {
   height: 100vh;
   display: flex;
@@ -5,7 +10,6 @@
 
   .dashboard-header {
     background: #f8f9fa;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 
     .date-picker-popup {
@@ -14,7 +18,7 @@
       z-index: 1050;
       max-width: 300px;
 
-      .md-flex{
+      .md-flex {
         display: flex;
       }
     }
@@ -40,232 +44,174 @@
   }
 }
 
-// Tile Styles
-.dashboard-tile {
-  .tile-header {
-    background: #f8f9fa;
+/* ============================================
+   BASE CARD – TIDAK MENGGANGGU LAYOUT TEMPLATE
+   ============================================ */
+.card {
+  position: relative;
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid rgba(203, 213, 225, 0.4);
+  transition: all 0.2s ease;
 
-    .tile-title {
-      font-size: 0.9rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .tile-actions {
-      position: absolute;
-      right: 10px;
-      top: 3px;
-      z-index: 2;
+  // HEADER: sekarang relative, tidak merusak aliran
+  .card-header {
+    position: relative;      // <-- diubah dari absolute
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border-bottom: 1px solid #eef2f6;
+    opacity: 1;              // <-- selalu terlihat
+    visibility: visible;
+    transition: none;
+    
+    // Tapi tombol aksi (gear, trash) bisa muncul hover effect
+    .btn-group .btn {
+      transition: all 0.2s;
     }
   }
 
-  .tile-body {
+  // OVERLAY: area double-click (tidak menutupi header)
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    position: relative;
-
-    .tile-value {
-      font-weight: 700;
-    }
-
-    .tile-icon {
-      .icon-container {
-        transition: transform 0.3s ease;
-        background-color: rgba(139, 139, 140, 0.17);
-
-        &:hover {
-          transform: scale(1.1);
-        }
-      }
-    }
-  }
-}
-
-// Chart Styles
-.dashboard-chart {
-  .chart-header {
-    background: #f8f9fa;
-  }
-
-  .chart-body {
-    .chart-container {
-      canvas {
-        max-width: 100%;
-      }
-    }
-
-    .chart-legend {
-      .legend-item {
-        .legend-color {
-          width: 12px;
-          height: 12px;
-          border-radius: 2px;
-          display: inline-block;
-        }
-
-        .legend-label {
-          font-size: 0.8rem;
-        }
-      }
+    cursor: pointer;
+    opacity: 0;
+    z-index: 5;
+    border-radius: inherit;
+    transition: opacity 0.2s;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.02);
+      opacity: 1;
     }
   }
 
-  .chart-footer{
-    position: relative;
-  }
-}
-
-.chart-overlay,
-.tile-overlay,
-.table-overlay,
-.kpi-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  cursor: pointer;
-  opacity: 0;
-
+  // Efek hover pada card (opsional, tidak merusak)
   &:hover {
-    background: rgba(0, 0, 0, 0.05);
-    opacity: 1;
-  }
-}
-// Table Styles
-.dashboard-table {
-  .table-header {
-    background: #f8f9fa;
-  }
-
-  .table-body {
-    .table-responsive {
-      &::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 3px;
-      }
-    }
-
-    table {
-      th {
-        font-weight: 600;
-        font-size: 0.85rem;
-        background: #f8f9fa;
-      }
-
-      td {
-        font-size: 0.85rem;
-        vertical-align: middle;
-      }
-
-      tr {
-        cursor: pointer;
-
-        &:hover {
-          background: #f8f9fa;
-        }
-      }
-    }
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1);
   }
 }
 
-// KPI Styles
-.dashboard-kpi {
-  height: 100%;
-  .kpi-header {
-    background: #f8f9fa;
+/* ============================================
+   RING PROGRESS (untuk template KPI Ring Progress)
+   ============================================ */
+.progress-ring {
+  width: 80px;
+  aspect-ratio: 1;
+  position: relative;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
   }
 
-  .kpi-body {
-    position: relative;
-    padding-bottom: 3px;
-    .kpi-value {
-      font-size: 3rem;
-      font-weight: 700;
-      line-height: 1;
-    }
+  circle {
+    fill: none;
+    stroke-width: 7;
+    stroke-linecap: round;
+  }
 
-    .kpi-unit {
-      color: #6c757d;
-    }
+  .progress-bg {
+    stroke: #e9ecef;
+  }
 
-    .progress-ring {
-      width: 92px; // Anda bebas ubah ini
-      aspect-ratio: 1;
-      position: relative;
+  .progress-bar {
+    transition: stroke-dashoffset 0.6s ease;
+    stroke: #4318ff; // warna default, bisa di-override inline
+  }
 
-      svg {
-        width: 100%;
-        height: 100%;
-        transform: rotate(-90deg);
-      }
-
-      circle {
-        fill: none;
-        stroke-width: 8;
-        stroke-linecap: round;
-      }
-
-      .progress-bg {
-        stroke: #e9ecef;
-      }
-
-      .progress-bar {
-        transition: stroke-dashoffset 0.6s ease;
-        stroke: #71639e;
-      }
-    }
-
-    .progress-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-    }
-
-    .kpi-icon {
-      font-size: 2rem;
-    }
-
-    .kpi-percent {
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
+  .progress-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 1.6rem;
   }
 }
 
-// Responsive adjustments
+/* ============================================
+   KUSTOMISASI TAMBAHAN UNTUK TREND & BADGE
+   ============================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.65rem;
+  font-weight: 500;
+  border-radius: 2rem;
+}
+
+.trend-up {
+  background: #e6f7ec;
+  color: #15803d;
+}
+.trend-down {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.kpi-percent {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  border-radius: 2rem;
+  padding: 0.2rem 0.6rem;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+/* ============================================
+   PROGRESS BAR LINEAR (untuk KPI Linear Progress)
+   ============================================ */
+.progress {
+  background-color: #e9ecef;
+  border-radius: 20px;
+  height: 8px;
+  overflow: hidden;
+}
+.progress-bar {
+  transition: width 0.4s ease;
+  border-radius: 20px;
+}
+
+/* ============================================
+   RESPONSIVE (tetap pakai milik Anda)
+   ============================================ */
 @media (max-width: 500px) {
   .dashboard-header {
     flex-direction: column;
     gap: 10px;
   }
-
 }
 @media (max-width: 768px) {
   .shell-dashboard-container {
+    .date-filter-container {
+      order: 3;
+      width: 100%;
 
-      .date-filter-container {
-        order: 3;
-        width: 100%;
+      .date-picker-popup {
+        max-width: 200px;
 
-        .date-picker-popup {
-          max-width: 200px;
-          
-          .md-flex{
-            display: block;
-          }
+        .md-flex {
+          display: block;
         }
       }
     }
+  }
 }
 
-// Animation for grid items
+/* ============================================
+   ANIMASI
+   ============================================ */
 @keyframes fadeIn {
   from {
     opacity: 0;
