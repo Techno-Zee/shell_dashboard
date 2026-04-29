@@ -1,0 +1,92 @@
+/* ========================================
+   KUSTOMISASI UNTUK 6 TEMPLATE KPI & TILE
+   ======================================== */
+
+/* --- 1. Ring Progress (KPI Ring Progress) --- */
+.progress-ring {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.progress-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-bg {
+  stroke: #e9ecef;
+  stroke-width: 8;
+  fill: none;
+}
+
+.progress-bar {
+  stroke: #4318ff;
+  stroke-width: 8;
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.kpi-percent {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  border-radius: 20px;
+  padding: 2px 8px;
+  display: inline-block;
+  color: #1e293b;
+}
+
+
+/* --- 3. Penyesuaian badge trend agar lebih rapi --- */
+.badge i.fa,
+.badge i.fas {
+  margin-right: 4px;
+  font-size: 0.7rem;
+}
+
+/* --- 4. Progress bar linear (KPI Linear Progress) --- */
+.progress {
+  background-color: #e9ecef;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  transition: width 0.3s ease;
+}
+
+.fwt-black {
+  font-weight: 700 !important;
+  font-size: 3rem;
+}
+
+.btn-setting{
+    opacity: 0;
+    position: absolute;
+    z-index: 2;
+    top: 5px;
+    right: 5px;
+}
+
+/* --- 6. Agar ikon di tile tidak terlalu besar --- */
+.fa-2x {
+  font-size: 1.8rem !important;
+}
+.fa-3x {
+  font-size: 2.2rem !important;
+}
+
+/* --- 7. Card body minimal padding agar rapi --- */
+.card-body {
+  position: relative;
+}
+
+/* --- 8. Warna teks untuk kontras (jika background gelap) --- */
+.bg-dark .card-body,
+[style*="background-color: #212529"] .card-body {
+  color: #f8f9fa;
+}
