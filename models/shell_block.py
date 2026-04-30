@@ -524,19 +524,7 @@ class DashboardBlock(models.Model):
         """Get tile/KPI data"""
         try:
             current_value = rec.record_value
-            previous_value = rec.prev_value
             target_value = rec.target_value
-            
-            # Calculate trend
-            trend = 0
-            trend_direction = 'neutral'
-            
-            if previous_value != 0:
-                trend = ((current_value - previous_value) / abs(previous_value)) * 100
-                if trend > 0:
-                    trend_direction = 'up'
-                elif trend < 0:
-                    trend_direction = 'down'
             
             # Calculate achievement percentage
             achievement = 0
@@ -550,11 +538,8 @@ class DashboardBlock(models.Model):
             return {
                 'value': current_value,
                 'formatted_value': formatted_value,
-                'previous_value': previous_value,
                 'target_value': target_value,
                 'formatted_target': formatted_target,
-                'trend': round(trend, 2),
-                'trend_direction': trend_direction,
                 'achievement': round(achievement, 2)
             }
         except Exception as e:
