@@ -81,6 +81,7 @@ export class ShellDashboard extends Component {
             const actionId = this.props.action.id;
             const blocks = await this.orm.call("dashboard.block", "get_dashboard_vals", [actionId]);
             // grid_position tidak lagi digunakan, tetapi tetap disimpan untuk keperluan lain
+            console.log(blocks);
             this.state.blocks = blocks;
         } catch (error) {
             console.error("Error initializing dashboard:", error);
@@ -200,7 +201,40 @@ export class ShellDashboard extends Component {
         });
     }
 
+    get groupedBlocks() {
+        const tiles = [];
+        const kpis = [];
+        const charts = [];
+        const tables = [];
+
+        for (const block of this.state.blocks) {
+            switch (block.type) {
+                case 'tile': tiles.push(block); break;
+                case 'kpi':  kpis.push(block); break;
+                case 'graph': charts.push(block); break;
+                case 'list': tables.push(block); break;
+                // tipe lain (jika ada) bisa ditambahkan
+            }
+        }
+        // tile dan kpi dianggap setara → diletakkan bersama di baris atas
+        const topRow = [...tiles, ...kpis];
+        return { topRow, charts, tables };
+    }
+
+    // Menentukan kelas col Bootstrap berdasarkan jumlah item di baris atas
+    getTopRowColClass() {
+        const count = this.groupedBlocks.topRow.length;
+        if (count === 1) return 'col-12';
+        if (count === 2) return 'col-sm-6';
+        if (count === 3) return 'col-md-4';
+        if (count === 4) return 'col-md-3';
+        // Jika >=5, gunakan col-md-3 (maks 4 per baris di md) dan col-lg-2 (6 per baris di lg)
+        // Kelebihan akan wrap ke baris berikutnya secara otomatis (manfaat Bootstrap)
+        return 'col-md-3 col-lg-2';
+    }
+
     resolveComponent(type) {
+
         switch (type) {
             case "tile": return DashboardTile;
             case "graph": return DashboardChart;

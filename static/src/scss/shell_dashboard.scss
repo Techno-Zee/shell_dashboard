@@ -42,6 +42,9 @@
     justify-content: center;
     z-index: 9999;
   }
+  .row > *{
+    padding: 10px;
+  }
 }
 
 /* ============================================
@@ -50,7 +53,7 @@
 .card {
   position: relative;
   background: #fff;
-  border-radius: 1rem;
+  border-radius: 15px;
   border: 1px solid rgba(203, 213, 225, 0.4);
   transition: all 0.2s ease;
 
@@ -64,11 +67,11 @@
     cursor: pointer;
     opacity: 0;
     z-index: 1;
-    border-radius: inherit;
+    border-radius: 15px;
     transition: opacity 0.2s;
     
     &:hover {
-      background: rgba(0, 0, 0, 0.02);
+      background: rgba(0, 0, 0, 0.115);
       opacity: 1;
     }
   }
@@ -158,14 +161,18 @@
    PROGRESS BAR LINEAR (untuk KPI Linear Progress)
    ============================================ */
 .progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
   background-color: #e9ecef;
-  border-radius: 20px;
+  border-radius: 0 0 20px 20px;
   height: 8px;
+  width: 100%;
   overflow: hidden;
 }
 .progress-bar {
   transition: width 0.4s ease;
-  border-radius: 20px;
+  border-radius: 0 20px 20px 20px;
 }
 
 /* ============================================

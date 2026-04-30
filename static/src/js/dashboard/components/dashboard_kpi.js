@@ -1,29 +1,55 @@
 /** @odoo-module **/
-import { useRef, Component, onMounted, onPatched } from "@odoo/owl";
+import { Component, useState, onWillStart, useRef, onMounted, onPatched } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 
 export class DashboardKPI extends Component {
-    static template = "shell_dashboard.KPI";
+    static template = "shell_dashboard.DashboardKPI"; // SATU template untuk semua varian
 
     setup() {
         super.setup();
+
         this.action = useService("action");
         this.dialog = useService("dialog");
         this.notification = useService("notification");
         this.orm = useService("orm");
 
-        this.rootRef = useRef("root");
+        // Ref untuk ring progress (hanya digunakan jika varian ring)
         this.ringRef = useRef("ring");
 
+        this.state = useState({
+            KPITheme: "kpi_ring_progress", // default key
+        });
 
+        onWillStart(async () => {
+            await this._loadKPITheme();
+        });
+
+        // Untuk ring progress, update progress saat mount atau patch
         onMounted(() => this.initProgress());
         onPatched(() => this.initProgress());
-
     }
 
+    async _loadKPITheme() {
+        try {
+            const settings = await this.orm.call("res.config.settings", "get_values", []);
+            let templateXml = settings.kpi_template; // Misal "shell_dashboard.KPIRingProgress"
+            // Petakan ke key pendek untuk memudahkan t-if
+            const themeMap = {
+                "shell_dashboard.KPIRingProgress": "kpi_ring_progress",
+                "shell_dashboard.KPITrendBadgeIcon": "kpi_trend_badge_icon",
+                "shell_dashboard.KPILinearProgress": "kpi_linear_progress",
+            };
+            this.state.KPITheme = themeMap[templateXml] || "kpi_ring_progress";
+            console.log("KPI theme loaded:", this.state.KPITheme);
+        } catch (error) {
+            console.error("Error loading KPI theme:", error);
+            this.state.KPITheme = "kpi_ring_progress";
+        }
+    }
+
+    // Inisialisasi ring progress (hanya dipanggil jika elemen ring ada)
     initProgress() {
-        const ring = this.ringRef.el;
+        const ring = this.ringRef?.el;
         if (!ring) return;
 
         const percent = parseFloat(ring.dataset.progress || 0);

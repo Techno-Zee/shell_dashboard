@@ -18,21 +18,29 @@
                              refreshCountdown="state.refreshCountdown"
                              onToggleAutoRefresh="() => toggleAutoRefresh()"
                              onRefresh="() => refreshDashboard()"/>
-
-            <div class="dashboard-content p-3 mb-5">
-                <div class="dashboard-blocks" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px;">
-                    <t t-foreach="state.blocks" t-as="block" t-key="block.id">
-                        <div class="dashboard-block-item">
-                            <t t-component="resolveComponent(block.type)"
-                               t-props="{ block: block }"/>
-                        </div>
-                    </t>
+            <!-- Konten dashboard -->
+            <div class="dashboard-content flex-grow-1 overflow-auto p-3">
+                <!-- BARIS ATAS: TILE & KPI -->
+                <div t-if="groupedBlocks.topRow.length" class="row mb-1">
+                    <div t-foreach="groupedBlocks.topRow" t-as="block" t-key="block.id" t-attf-class="#{getTopRowColClass()}">
+                        <t t-component="resolveComponent(block.type)" block="block"/>
+                    </div>
                 </div>
-            </div>
-
-            <div t-if="state.loading" class="loading-overlay">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                <!-- BARIS GRAFIK -->
+                <div t-if="groupedBlocks.charts.length" class="row mb-1">
+                    <div t-foreach="groupedBlocks.charts" t-as="block" t-key="block.id" class="col-12 col-md-6 col-xl-4">
+                        <t t-component="resolveComponent(block.type)" block="block"/>
+                    </div>
+                </div>
+                <!-- BARIS TABEL -->
+                <div t-if="groupedBlocks.tables.length" class="row g-4">
+                    <div t-foreach="groupedBlocks.tables" t-as="block" t-key="block.id" class="col-12">
+                        <t t-component="resolveComponent(block.type)" block="block"/>
+                    </div>
+                </div>
+                <!-- Loading overlay -->
+                <div t-if="state.loading" class="loading-overlay">
+                    <i class="fa fa-spinner fa-spin fa-2x text-primary"/>
                 </div>
             </div>
         </div>
