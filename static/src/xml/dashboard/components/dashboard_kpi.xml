@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
     <t t-name="shell_dashboard.DashboardKPI" owl="1">
-        <div class="card">
+        <div t-if="env.isSmall">Mobile</div>
+        <div t-else="" class="card">
             <div class="card-body px-3 position-relative">
                 <!-- Tombol setting di pojok kanan atas -->
                 <button t-on-click="configureBlock" class="btn btn-light btn-setting" style="position: absolute; top: 12px; right: 12px; z-index: 2;">
@@ -9,39 +10,31 @@
                 </button>
                 <!-- ========== VARIAN 1: KPI RING PROGRESS ========== -->
                 <t t-if="state.KPITheme == 'kpi_ring_progress'">
-                    <div class="kpi-card d-flex justify-content-between align-items-center">
+                    <div class="kpi-card">
                         <!-- LEFT SIDE -->
-                        <div>
-                            <div class="d-flex align-items-baseline gap-2">
-                                <div class="fwt-black">
-                                    <t t-esc="props.block.data.formatted_value" />
-                                </div>
-                                <span>
-                                    <div t-att-style="'color: ' + props.block.config.colors.text" class="kpi-label small">
-                                        <t t-esc="props.block.name" />
-                                    </div>
-                                    <span t-att-class="'badge ' + getTrendClass(props.block.data.trend_direction) + ' text-light'">
-                                        <i t-att-class="getTrendIcon(props.block.data.trend_direction)" />
-                                        <t t-esc="Math.abs(props.block.data.trend).toFixed(1) + '%'" />
-                                    </span>
-                                </span>
+                        <div class="d-flex justify-content-between align-items-center gap-2">
+                            <div class="fwt-black">
+                                <t t-esc="props.block.data.formatted_value" />
                             </div>
-                        </div>
-                        <!-- RIGHT SIDE: Ring Progress -->
-                        <div>
+                            <!-- RIGHT SIDE: Ring Progress -->
                             <div t-att-data-progress="props.block.data.achievement" t-ref="ring" class="progress-ring">
                                 <svg viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet" style="width: 70px; height: 70px;">
                                     <circle class="progress-bg" cx="60" cy="60" r="50" stroke="#e9ecef" stroke-width="8" fill="none" />
                                     <circle class="progress-bar" cx="60" cy="60" r="50" stroke="#4318ff" stroke-width="8" fill="none" stroke-linecap="round" />
                                 </svg>
                                 <div class="progress-content" style="position: relative; top: -42px; text-align: center;">
-                                    <i t-att-class="props.block.config.icon + ' kpi-icon'" t-att-style="'color:' + props.block.config.colors.icon" />
+                                    <!-- <i t-att-class="props.block.config.icon + ' kpi-icon'"/> -->
+                                    <div class="kpi-percent" t-att-style="'color:' + props.block.config.colors.icon">
+                                        <t t-esc="Math.min(props.block.data.achievement,100).toFixed(0)" />%
+                                    </div>
                                 </div>
                             </div>
-                            <div class="kpi-percent text-center mt-1">
-                                <t t-esc="Math.min(props.block.data.achievement,100).toFixed(0)" />%
-                            </div>
                         </div>
+                        <span>
+                            <div t-att-style="'color: ' + props.block.config.colors.text" class="kpi-label small">
+                                <t t-esc="props.block.name" />
+                            </div>
+                        </span>
                     </div>
                 </t>
                 <!-- ========== VARIAN 2: KPI TREND BADGE ICON ========== -->
@@ -54,42 +47,44 @@
                             <div t-att-style="'color:' + props.block.config.colors.text" class="small mb-2">
                                 <t t-esc="props.block.name" />
                             </div>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-end">
+                            <div class="rounded-circle bg-light bg-opacity-25 p-3">
+                                <i t-att-class="props.block.config.icon + ' fa-3x'" t-att-style="'color:' + props.block.config.colors.icon" />
+                            </div>
                             <span t-att-class="'badge fs-6 py-1 px-2 ' + (props.block.data.trend_direction === 'up' ? 'bg-success' : 'bg-danger')">
                                 <i t-att-class="getTrendIcon(props.block.data.trend_direction)" />
                                 <t t-esc="Math.abs(props.block.data.trend).toFixed(1) + '%'" />
                                 <span class="ms-1">vs last period</span>
                             </span>
                         </div>
-                        <div class="rounded-circle bg-light bg-opacity-25 p-3">
-                            <i t-att-class="props.block.config.icon + ' fa-3x'" t-att-style="'color:' + props.block.config.colors.icon" />
-                        </div>
                     </div>
                 </t>
                 <!-- ========== VARIAN 3: KPI LINEAR PROGRESS ========== -->
                 <t t-elif="state.KPITheme == 'kpi_linear_progress'">
-                        <div class="relative">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="fwt-black" t-att-style="'color:' + props.block.config.colors.value">
-                                    <t t-esc="props.block.data.formatted_value" />
-                                </div>
-                                <div class="text-end">
-                                    <div class="badge bg-light text-dark">
-                                        <t t-esc="Math.min(props.block.data.achievement,100).toFixed(0)" />% target
-                                    </div>
-                                    <div class="small mt-1">
-                                        <i t-att-class="getTrendIcon(props.block.data.trend_direction)" />
-                                        <t t-esc="Math.abs(props.block.data.trend).toFixed(1) + '%'" />
-                                    </div>
-                                </div>
+                    <div class="relative">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="fwt-black" t-att-style="'color:' + props.block.config.colors.value">
+                                <t t-esc="props.block.data.formatted_value" />
                             </div>
-                            <div class="small text-muted mt-1">
-                                <t t-esc="props.block.name" />
+                            <div class="text-end">
+                                <div class="badge bg-light text-dark">
+                                    <t t-esc="Math.min(props.block.data.achievement,100).toFixed(0)" />% target
+                                </div>
+                                <div class="small mt-1">
+                                    <i t-att-class="getTrendIcon(props.block.data.trend_direction)" />
+                                    <t t-esc="Math.abs(props.block.data.trend).toFixed(1) + '%'" />
+                                </div>
                             </div>
                         </div>
-                        <div class="progress mt-3" style="height: 8px;">
-                            <div class="progress-bar" t-att-style="'width: ' + Math.min(props.block.data.achievement,100) + '%; background-color:' + props.block.config.colors.progress" 
+                        <div class="small text-muted mt-1">
+                            <t t-esc="props.block.name" />
+                        </div>
+                    </div>
+                    <div class="progress mt-3" style="height: 8px;">
+                        <div class="progress-bar" t-att-style="'width: ' + Math.min(props.block.data.achievement,100) + '%; background-color:' + props.block.config.colors.progress" 
                                  t-att-aria-valuenow="props.block.data.achievement" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
+                    </div>
                 </t>
                 <!-- Double-click overlay -->
                 <div t-on-dblclick.stop="openRecords" class="overlay" />

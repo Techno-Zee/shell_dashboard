@@ -21,20 +21,14 @@
             <!-- Konten dashboard -->
             <div class="dashboard-content flex-grow-1 overflow-auto p-3">
                 <!-- BARIS ATAS: TILE & KPI -->
-                <div t-if="groupedBlocks.topRow.length" class="row mb-1">
+                <div t-if="groupedBlocks.topRow.length" class="row">
                     <div t-foreach="groupedBlocks.topRow" t-as="block" t-key="block.id" t-attf-class="#{getTopRowColClass()}">
                         <t t-component="resolveComponent(block.type)" block="block"/>
                     </div>
                 </div>
-                <!-- BARIS GRAFIK -->
-                <div t-if="groupedBlocks.charts.length" class="row mb-1">
-                    <div t-foreach="groupedBlocks.charts" t-as="block" t-key="block.id" class="col-12 col-md-6 col-xl-4">
-                        <t t-component="resolveComponent(block.type)" block="block"/>
-                    </div>
-                </div>
-                <!-- BARIS TABEL -->
-                <div t-if="groupedBlocks.tables.length" class="row g-4">
-                    <div t-foreach="groupedBlocks.tables" t-as="block" t-key="block.id" class="col-12">
+                <!-- BARIS GRAFIK TABEL-->
+                <div t-if="groupedBlocks.downRow.length" class="row">
+                    <div t-foreach="groupedBlocks.downRow" t-as="block" t-key="block.id" t-attf-class="#{getDownRowColClass(block)}">
                         <t t-component="resolveComponent(block.type)" block="block"/>
                     </div>
                 </div>

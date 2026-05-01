@@ -79,7 +79,7 @@ export class DashboardChart extends Component {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        display: true
                     },
                     tooltip: {
                         callbacks: {
@@ -156,28 +156,11 @@ export class DashboardChart extends Component {
                 res_id: this.props.block.id,
                 view_mode: 'form',
                 views: [[false, 'form']],
-                target: 'current'
+                target: 'new'
             });
         } catch (error) {
             console.error("Error configuring block:", error);
             this.notification.add("Failed to configure block", { type: "danger" });
-        }
-    }
-
-    async deleteBlock() {
-        try {
-            const confirmed = await this.dialog.confirm("Are you sure you want to delete this chart?", {
-                title: "Confirm Deletion"
-            });
-
-            if (confirmed) {
-                await this.orm.unlink("dashboard.block", [this.props.block.id]);
-                this.notification.add("Chart deleted successfully", { type: "success" });
-                this.env.bus.trigger('dashboard:refresh');
-            }
-        } catch (error) {
-            console.error("Error deleting chart:", error);
-            this.notification.add("Failed to delete chart", { type: "danger" });
         }
     }
 
