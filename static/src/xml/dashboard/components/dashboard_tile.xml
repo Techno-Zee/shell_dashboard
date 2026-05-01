@@ -45,7 +45,7 @@
                         <div class="fwt-black" t-att-style="'color:' + props.block.config.colors.value">
                             <t t-esc="props.block.data.formatted_value" />
                         </div>
-                        <div class="small mt-2">
+                        <div class="small">
                             <span class="text-muted">Subtotal: </span>
                             <strong t-att-style="'color:' + props.block.config.colors.secondary">
                                 <t t-esc="props.block.data.secondary_value || '—'" />

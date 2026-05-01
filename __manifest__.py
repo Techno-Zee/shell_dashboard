@@ -36,11 +36,11 @@ yang dibangun dengan jQuery untuk kebutuhan visualisasi data di backend Odoo.
     'assets': {
         'web.assets_backend': [
 
-            # Online Linbaries
+            # Linbaries
             'shell_dashboard/static/lib/chartjs/chart.umd.min.js',
             'shell_dashboard/static/src/data/fontawesome4-icons.json',
             
-            # Libraries 
+            # Components Template 
             'shell_dashboard/static/src/js/dashboard/dashboard_main.js',
             'shell_dashboard/static/src/js/dashboard/components/*.js',
             'shell_dashboard/static/src/js/**/*.js',

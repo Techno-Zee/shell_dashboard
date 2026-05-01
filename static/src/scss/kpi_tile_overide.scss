@@ -6,8 +6,8 @@
 .progress-ring {
   position: relative;
   display: inline-block;
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
 }
 
 .progress-ring svg {
@@ -28,16 +28,6 @@
   fill: none;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.4s ease;
-}
-
-.kpi-percent {
-  font-size: 0.7rem;
-  font-weight: 700;
-  background: #f1f5f9;
-  border-radius: 20px;
-  padding: 2px 8px;
-  display: inline-block;
-  color: #1e293b;
 }
 
 

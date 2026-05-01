@@ -10,239 +10,289 @@ import { DashboardTable } from "./components/dashboard_table";
 import { DashboardKPI } from "./components/dashboard_kpi";
 
 export class ShellDashboard extends Component {
-    static template = "shell_dashboard.Dashboard";
-    static components = {
-        DashboardHeader,
-        DashboardTile,
-        DashboardChart,
-        DashboardTable,
-        DashboardKPI,
+  static template = "shell_dashboard.Dashboard";
+  static components = {
+    DashboardHeader,
+    DashboardTile,
+    DashboardChart,
+    DashboardTable,
+    DashboardKPI,
+  };
+
+  setup() {
+    super.setup();
+
+    // Use service
+    this.action = useService("action");
+    this.orm = useService("orm");
+    this.dialog = useService("dialog");
+    this.notification = useService("notification");
+
+    this.state = useState({
+      loading: false,
+      autoRefresh: false,
+      refreshCountdown: 30,
+      showDatePicker: false,
+      startDate: "",
+      endDate: "",
+      name: session.partner_display_name,
+      isAdmin: false,
+      isManager: false,
+      isUser: false,
+      blocks: [],
+    });
+
+    this.countdownInterval = null;
+
+    // ========== BIND ALL METHODS ==========
+    this.loadRoles = this.loadRoles.bind(this);
+    this.initializeDashboard = this.initializeDashboard.bind(this);
+    this.toggleDatePicker = this.toggleDatePicker.bind(this);
+    this.getDateRangeText = this.getDateRangeText.bind(this);
+    this.toggleAutoRefresh = this.toggleAutoRefresh.bind(this);
+    this.startAutoRefresh = this.startAutoRefresh.bind(this);
+    this.stopAutoRefresh = this.stopAutoRefresh.bind(this);
+    this.refreshDashboard = this.refreshDashboard.bind(this);
+    this.setupEventListeners = this.setupEventListeners.bind(this);
+    this.resolveComponent = this.resolveComponent.bind(this);
+
+    this.loadRoles();
+    onMounted(async () => {
+      await this.initializeDashboard();
+      this.setupEventListeners();
+    });
+    onWillUnmount(() => {
+      this.stopAutoRefresh();
+    });
+  }
+
+  async loadRoles() {
+    const res = await this.orm.call(
+      "res.users",
+      "get_shell_dashboard_roles",
+      [],
+    );
+    Object.assign(this.state, {
+      isAdmin: res.is_admin,
+      isManager: res.is_manager,
+      isUser: res.is_user,
+    });
+  }
+
+  async initializeDashboard() {
+    this.state.loading = true;
+    try {
+      const actionId = this.props.action.id;
+      const blocks = await this.orm.call(
+        "dashboard.block",
+        "get_dashboard_vals",
+        [actionId],
+      );
+      // grid_position tidak lagi digunakan, tetapi tetap disimpan untuk keperluan lain
+      console.log(blocks);
+      this.state.blocks = blocks;
+    } catch (error) {
+      console.error("Error initializing dashboard:", error);
+      this.notification.add("Failed to load dashboard", { type: "danger" });
+    } finally {
+      this.state.loading = false;
+    }
+  }
+
+  onClickAddItem = (type, chartType = null) => {
+    const context = {
+      default_type: type,
+      default_name: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+      default_client_action_id: parseInt(this.props.action.id),
     };
-
-    setup() {
-        super.setup();
-
-        // Use service
-        this.action = useService("action");
-        this.orm = useService("orm");
-        this.dialog = useService("dialog");
-        this.notification = useService("notification");
-
-        this.state = useState({
-            loading: false,
-            autoRefresh: false,
-            refreshCountdown: 30,
-            showDatePicker: false,
-            startDate: '',
-            endDate: '',
-            name: session.partner_display_name,
-            isAdmin: false,
-            isManager: false,
-            isUser: false,
-            blocks: [],
-        });
-
-        this.countdownInterval = null;
-
-        // ========== BIND ALL METHODS ==========
-        this.loadRoles = this.loadRoles.bind(this);
-        this.initializeDashboard = this.initializeDashboard.bind(this);
-        this.toggleDatePicker = this.toggleDatePicker.bind(this);
-        this.getDateRangeText = this.getDateRangeText.bind(this);
-        this.toggleAutoRefresh = this.toggleAutoRefresh.bind(this);
-        this.startAutoRefresh = this.startAutoRefresh.bind(this);
-        this.stopAutoRefresh = this.stopAutoRefresh.bind(this);
-        this.refreshDashboard = this.refreshDashboard.bind(this);
-        this.setupEventListeners = this.setupEventListeners.bind(this);
-        this.resolveComponent = this.resolveComponent.bind(this);
-
-        this.loadRoles();
-        onMounted(async () => {
-            await this.initializeDashboard();
-            this.setupEventListeners();
-        });
-        onWillUnmount(() => {
-            this.stopAutoRefresh();
-        });
+    // Sesuaikan default height/width/icon sesuai tipe
+    if (type === "tile") {
+      context.default_fa_icon = "fa fa-cube";
+    } else if (type === "kpi") {
+      context.default_fa_icon = "fa fa-chart-line";
+    } else if (type === "graph") {
+      context.default_graph_type = chartType || "bar";
+      context.default_fa_icon = `fa fa-${chartType || "bar"}-chart`;
+    } else if (type === "list") {
+      context.default_fa_icon = "fa fa-table";
     }
+    this.action.doAction({
+      type: "ir.actions.act_window",
+      res_model: "dashboard.block",
+      views: [[false, "form"]],
+      target: "new",
+      context,
+    });
+  };
 
-    async loadRoles() {
-        const res = await this.orm.call("res.users", "get_shell_dashboard_roles", []);
-        Object.assign(this.state, {
-            isAdmin: res.is_admin,
-            isManager: res.is_manager,
-            isUser: res.is_user,
-        });
+  toggleDatePicker() {
+    // console.log(this.state.showDatePicker)
+    this.state.showDatePicker = !this.state.showDatePicker;
+  }
+
+  getDateRangeText() {
+    if (!this.state.startDate && !this.state.endDate)
+      return "Select Date Range";
+    const formatDate = (dateStr) =>
+      dateStr
+        ? new Date(dateStr).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })
+        : "";
+    return `${formatDate(this.state.startDate)} ${this.state.startDate && this.state.endDate ? " - " : ""}${formatDate(this.state.endDate)}`;
+  }
+
+  applyDateFilter = async (start, end) => {
+    this.state.showDatePicker = false;
+    this.state.loading = true;
+    try {
+      const blocks = await this.orm.call(
+        "dashboard.block",
+        "get_dashboard_vals",
+        [this.props.action.id, start, end],
+      );
+      this.state.blocks = blocks;
+      this.notification.add("Date filter applied", { type: "success" });
+    } catch (error) {
+      this.notification.add("Failed to apply date filter", { type: "danger" });
+    } finally {
+      this.state.loading = false;
     }
+  };
 
-    async initializeDashboard() {
-        this.state.loading = true;
-        try {
-            const actionId = this.props.action.id;
-            const blocks = await this.orm.call("dashboard.block", "get_dashboard_vals", [actionId]);
-            // grid_position tidak lagi digunakan, tetapi tetap disimpan untuk keperluan lain
-            console.log(blocks);
-            this.state.blocks = blocks;
-        } catch (error) {
-            console.error("Error initializing dashboard:", error);
-            this.notification.add("Failed to load dashboard", { type: "danger" });
-        } finally {
-            this.state.loading = false;
-        }
-    }
+  resetDateFilter = () => {
+    this.state.startDate = "";
+    this.state.endDate = "";
+    this.state.showDatePicker = false;
+    this.initializeDashboard();
+  };
 
-    onClickAddItem = (type, chartType = null) => {
-        const context = {
-            default_type: type,
-            default_name: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
-            default_client_action_id: parseInt(this.props.action.id),
-        };
-        // Sesuaikan default height/width/icon sesuai tipe
-        if (type === 'tile') {
-            context.default_fa_icon = 'fa fa-cube';
-        } else if (type === 'kpi') {
-            context.default_fa_icon = 'fa fa-chart-line';
-        } else if (type === 'graph') {
-            context.default_graph_type = chartType || 'bar';
-            context.default_fa_icon = `fa fa-${chartType || 'bar'}-chart`;
-        } else if (type === 'list') {
-            context.default_fa_icon = 'fa fa-table';
-        }
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'dashboard.block',
-            views: [[false, 'form']],
-            target: 'new',
-            context,
-        });
-    };
+  toggleAutoRefresh() {
+    this.state.autoRefresh = !this.state.autoRefresh;
+    if (this.state.autoRefresh) this.startAutoRefresh();
+    else this.stopAutoRefresh();
+  }
 
-    toggleDatePicker() {
-        // console.log(this.state.showDatePicker)
-        this.state.showDatePicker = !this.state.showDatePicker;
-    }
-
-    getDateRangeText() {
-        if (!this.state.startDate && !this.state.endDate) return "Select Date Range";
-        const formatDate = (dateStr) => dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "";
-        return `${formatDate(this.state.startDate)} ${this.state.startDate && this.state.endDate ? ' - ' : ''}${formatDate(this.state.endDate)}`;
-    }
-
-    applyDateFilter = async (start, end) => {
-        this.state.showDatePicker = false;
-        this.state.loading = true;
-        try {
-            const blocks = await this.orm.call("dashboard.block", "get_dashboard_vals", [this.props.action.id, start, end]);
-            this.state.blocks = blocks;
-            this.notification.add("Date filter applied", { type: "success" });
-        } catch (error) {
-            this.notification.add("Failed to apply date filter", { type: "danger" });
-        } finally {
-            this.state.loading = false;
-        }
-    };
-
-    resetDateFilter = () => {
-        this.state.startDate = '';
-        this.state.endDate = '';
-        this.state.showDatePicker = false;
-        this.initializeDashboard();
-    };
-
-    toggleAutoRefresh() {
-        this.state.autoRefresh = !this.state.autoRefresh;
-        if (this.state.autoRefresh) this.startAutoRefresh();
-        else this.stopAutoRefresh();
-    }
-
-    startAutoRefresh() {
+  startAutoRefresh() {
+    this.state.refreshCountdown = 30;
+    this.countdownInterval = setInterval(() => {
+      this.state.refreshCountdown--;
+      if (this.state.refreshCountdown <= 0) {
+        this.refreshDashboard();
         this.state.refreshCountdown = 30;
-        this.countdownInterval = setInterval(() => {
-            this.state.refreshCountdown--;
-            if (this.state.refreshCountdown <= 0) {
-                this.refreshDashboard();
-                this.state.refreshCountdown = 30;
-            }
-        }, 1000);
+      }
+    }, 1000);
+  }
+
+  stopAutoRefresh() {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = null;
     }
+  }
 
-    stopAutoRefresh() {
-        if (this.countdownInterval) {
-            clearInterval(this.countdownInterval);
-            this.countdownInterval = null;
-        }
+  async refreshDashboard() {
+    this.state.loading = true;
+    try {
+      await this.initializeDashboard();
+      this.notification.add("Dashboard refreshed", { type: "success" });
+    } catch (error) {
+      console.error("Error refreshing dashboard:", error);
+    } finally {
+      this.state.loading = false;
     }
+  }
 
-    async refreshDashboard() {
-        this.state.loading = true;
-        try {
-            await this.initializeDashboard();
-            this.notification.add("Dashboard refreshed", { type: "success" });
-        } catch (error) {
-            console.error("Error refreshing dashboard:", error);
-        } finally {
-            this.state.loading = false;
-        }
+  exportAsPDF = () => console.log("Export PDF");
+  exportAsPNG = () => console.log("Export PNG");
+  exportAsCSV = () => console.log("Export CSV");
+
+  setupEventListeners() {
+    document.addEventListener("click", (event) => {
+      if (
+        this.state.showDatePicker &&
+        !event.target.closest(".date-filter-container")
+      ) {
+        this.state.showDatePicker = false;
+      }
+    });
+    // Refresh dashboard ketika ada block yang di-delete (trigger dari komponen anak)
+    this.env.bus.addEventListener("dashboard:refresh", () => {
+      this.initializeDashboard();
+    });
+  }
+
+  get groupedBlocks() {
+    const tiles = [];
+    const kpis = [];
+    const charts = [];
+    const tables = [];
+
+    for (const block of this.state.blocks) {
+      switch (block.type) {
+        case "tile":
+          tiles.push(block);
+          break;
+        case "kpi":
+          kpis.push(block);
+          break;
+        case "graph":
+          charts.push(block);
+          break;
+        case "list":
+          tables.push(block);
+          break;
+        // tipe lain (jika ada) bisa ditambahkan
+      }
     }
+    // tile dan kpi dianggap setara → diletakkan bersama di baris atas
+    const topRow = [...tiles, ...kpis];
+    const downRow = [...charts, ...tables];
+    return { topRow, downRow };
+  }
 
-    exportAsPDF = () => console.log("Export PDF");
-    exportAsPNG = () => console.log("Export PNG");
-    exportAsCSV = () => console.log("Export CSV");
+  // Menentukan kelas col Bootstrap berdasarkan jumlah item di baris atas
+  getTopRowColClass() {
+    const count = this.groupedBlocks.topRow.length;
+    if (count === 1) return "col-12";
+    if (count === 2) return "col-sm-6";
+    if (count === 3) return "col-md-4";
+    if (count === 4) return "col-md-3";
+    // Jika >=5, gunakan col-md-3 (maks 4 per baris di md) dan col-lg-2 (6 per baris di lg)
+    // Kelebihan akan wrap ke baris berikutnya secara otomatis (manfaat Bootstrap)
+    return "col-md-3 col-lg-2";
+  }
 
-    setupEventListeners() {
-        document.addEventListener('click', (event) => {
-            if (this.state.showDatePicker && !event.target.closest('.date-filter-container')) {
-                this.state.showDatePicker = false;
-            }
-        });
-        // Refresh dashboard ketika ada block yang di-delete (trigger dari komponen anak)
-        this.env.bus.addEventListener('dashboard:refresh', () => {
-            this.initializeDashboard();
-        });
+  getDownRowColClass(block) {
+    // Jika block adalah chart, cek tipe chart dari config
+    if (block.type === "graph" && block.config && block.config.chart_type) {
+      const chartType = block.config.chart_type;
+      // Pie, donut, radar membutuhkan ruang lebih lebar (col-lg-5)
+      if (["pie", "doughnut", "radar"].includes(chartType)) {
+        return "col-lg-4 col-md-6 col-sm-12";
+      }
+      // Bar, line, dan lainnya bisa col-lg-6
+      return "col-lg-6 col-md-6 col-sm-12";
     }
+    // Untuk table (list) atau tipe lain, berikan kelas default yang cukup
+    return "col-lg-8 col-md-6 col-sm-12";
+  }
 
-    get groupedBlocks() {
-        const tiles = [];
-        const kpis = [];
-        const charts = [];
-        const tables = [];
-
-        for (const block of this.state.blocks) {
-            switch (block.type) {
-                case 'tile': tiles.push(block); break;
-                case 'kpi':  kpis.push(block); break;
-                case 'graph': charts.push(block); break;
-                case 'list': tables.push(block); break;
-                // tipe lain (jika ada) bisa ditambahkan
-            }
-        }
-        // tile dan kpi dianggap setara → diletakkan bersama di baris atas
-        const topRow = [...tiles, ...kpis];
-        return { topRow, charts, tables };
+  resolveComponent(type) {
+    switch (type) {
+      case "tile":
+        return DashboardTile;
+      case "graph":
+        return DashboardChart;
+      case "list":
+        return DashboardTable;
+      case "kpi":
+        return DashboardKPI;
+      default:
+        return null;
     }
-
-    // Menentukan kelas col Bootstrap berdasarkan jumlah item di baris atas
-    getTopRowColClass() {
-        const count = this.groupedBlocks.topRow.length;
-        if (count === 1) return 'col-12';
-        if (count === 2) return 'col-sm-6';
-        if (count === 3) return 'col-md-4';
-        if (count === 4) return 'col-md-3';
-        // Jika >=5, gunakan col-md-3 (maks 4 per baris di md) dan col-lg-2 (6 per baris di lg)
-        // Kelebihan akan wrap ke baris berikutnya secara otomatis (manfaat Bootstrap)
-        return 'col-md-3 col-lg-2';
-    }
-
-    resolveComponent(type) {
-
-        switch (type) {
-            case "tile": return DashboardTile;
-            case "graph": return DashboardChart;
-            case "list": return DashboardTable;
-            case "kpi": return DashboardKPI;
-            default: return null;
-        }
-    }
+  }
 }
 
 registry.category("actions").add("shell_dashboard.action", ShellDashboard);
