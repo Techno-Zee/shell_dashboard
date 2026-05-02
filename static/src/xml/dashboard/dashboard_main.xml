@@ -19,19 +19,19 @@
                              onToggleAutoRefresh="() => toggleAutoRefresh()"
                              onRefresh="() => refreshDashboard()"/>
             <!-- Konten dashboard -->
-            <div class="dashboard-content flex-grow-1 overflow-auto p-3">
+            <div class="dashboard-content row overflow-auto p-3">
                 <!-- BARIS ATAS: TILE & KPI -->
-                <div t-if="groupedBlocks.topRow.length" class="row">
+                <t t-if="groupedBlocks.topRow.length" >
                     <div t-foreach="groupedBlocks.topRow" t-as="block" t-key="block.id" t-attf-class="#{getTopRowColClass()}">
                         <t t-component="resolveComponent(block.type)" block="block"/>
                     </div>
-                </div>
+                </t>
                 <!-- BARIS GRAFIK TABEL-->
-                <div t-if="groupedBlocks.downRow.length" class="row">
+                <t t-if="groupedBlocks.downRow.length" >
                     <div t-foreach="groupedBlocks.downRow" t-as="block" t-key="block.id" t-attf-class="#{getDownRowColClass(block)}">
                         <t t-component="resolveComponent(block.type)" block="block"/>
                     </div>
-                </div>
+                </t>
                 <!-- Loading overlay -->
                 <div t-if="state.loading" class="loading-overlay">
                     <i class="fa fa-spinner fa-spin fa-2x text-primary"/>

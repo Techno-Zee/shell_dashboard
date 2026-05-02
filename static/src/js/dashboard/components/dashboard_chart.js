@@ -59,7 +59,7 @@ export class DashboardChart extends Component {
         const chartData = {
             labels: block.data.labels || [],
             datasets: [{
-                label: block.name,
+                label: block.config?.group_by,
                 data: block.data.datasets?.[0]?.data || [],
                 backgroundColor: this.getChartColors(block.data.labels?.length || 0),
                 borderColor: block.type === 'line' || block.type === 'radar'

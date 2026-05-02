@@ -16,8 +16,6 @@ class DashboardBlock(models.Model):
     # ==== SEQUENCE AND VISIBILITY ====
     sequence = fields.Integer(string="Sequence", default=10, help="Order of blocks in dashboard")
     active = fields.Boolean(string="Active", default=True, help="Uncheck to hide this block")
-    is_public = fields.Boolean(string="Public Dashboard", default=False, 
-                               help="If checked, this block will be visible to all users")
     
     # ==== BASIC INFORMATION ====
     name = fields.Char(string="Name", required=True, help='Name of the block')
@@ -126,17 +124,7 @@ class DashboardBlock(models.Model):
         default="#000000", 
         help='Icon Color'
     )
-    
-    # ==== LAYOUT AND POSITION ====
-    height = fields.Char(string="Height", default="180px", help="Height of the block")
-    width = fields.Char(string="Width", default="300px", help="Width of the block")
-    translate_x = fields.Char(string="Position X", help="X position for grid layout")
-    translate_y = fields.Char(string="Position Y", help="Y position for grid layout")
-    data_x = fields.Integer(string="Grid X", default=0, help="Grid X coordinate")
-    data_y = fields.Integer(string="Grid Y", default=0, help="Grid Y coordinate")
-    grid_width = fields.Integer(string="Grid Width", default=1, help="Width in grid units (1-12)")
-    grid_height = fields.Integer(string="Grid Height", default=1, help="Height in grid units (1-12)")
-    
+
     # ==== TABLE CONFIGURATION ====
     # PERBAIKAN: Untuk Many2many, Odoo menangani ondelete secara otomatis
     tag_fields_ids = fields.Many2many(
@@ -343,8 +331,7 @@ class DashboardBlock(models.Model):
             [
                 ('client_action_id', '=', int(action_id)), 
                 ('active', '=', True)
-            ],
-            order='data_y, data_x'
+            ]
         )
         
         for rec in blocks:
@@ -355,12 +342,6 @@ class DashboardBlock(models.Model):
                     'type': rec.type,
                     'model_name': rec.model_name,
                     'active': rec.active,
-                    'grid_position': {
-                        'x': rec.data_x or 0,
-                        'y': rec.data_y or 0,
-                        'w': rec.grid_width or 1,
-                        'h': rec.grid_height or 1
-                    },
                     'config': self._get_block_config(rec),
                     'data': self._get_block_data(rec, start_date, end_date),
                     'last_update': rec.last_update.isoformat() if rec.last_update else None,
@@ -388,10 +369,6 @@ class DashboardBlock(models.Model):
                 'background': rec.tile_color or "#ffffff",
                 'text': rec.text_color or "#171717",
                 'icon': rec.fa_color or "#000000"
-            },
-            'layout': {
-                'height': rec.height or '300px',
-                'width': rec.width or '100%'
             }
         }
         
@@ -549,48 +526,27 @@ class DashboardBlock(models.Model):
                 'formatted_value': "0",
                 'error': str(e)
             }
-            
+
     @api.model
-    def get_save_layout(self, grid_data_list):
-        """Save edited layout values"""
-        for data in grid_data_list:
-            block = self.browse(int(data['id']))
-            if not block:
-                continue
-                
-            updates = {}
-            if 'x' in data and 'y' in data:
-                updates.update({
-                    'data_x': int(data['x']),
-                    'data_y': int(data['y'])
-                })
-            
-            if 'w' in data and 'h' in data:
-                updates.update({
-                    'grid_width': int(data['w']),
-                    'grid_height': int(data['h'])
-                })
-            
-            if 'height' in data:
-                updates.update({
-                    'height': f"{data['height']}px"
-                    # 'width': f"{data['width']}px"
-                })
-            
-            if updates:
-                block.write(updates)
-                
-        return {'success': True, 'message': 'Layout saved successfully'}
-    
     def action_refresh_data(self):
-        """Manual refresh of block data"""
-        self._compute_record_value()
+        """Refresh all data in this model"""
+        # Ambil semua record dalam model ini
+        all_records = self.search([])
+        
+        # Untuk setiap record, panggil method komputasi (jika diperlukan)
+        for record in all_records:
+            record._compute_record_value()  # asumsikan method ini ada
+        
+        # Atau, jika _compute_record_value adalah method compute untuk field stored,
+        # Anda bisa memicu recompute secara masal dengan:
+        # all_records.modified(['field1', 'field2']) diikuti dengan recompute, tapi lebih mudah loop di atas.
+        
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': 'Data Refreshed',
-                'message': 'Dashboard data has been refreshed.',
+                'message': f'All data ({len(all_records)} records) has been refreshed.',
                 'type': 'success',
                 'sticky': False,
             }
@@ -604,8 +560,6 @@ class DashboardBlock(models.Model):
         copy_vals = {
             'name': f"{self.name} (Copy)",
             'sequence': self.sequence + 1,
-            'data_x': (self.data_x or 0) + 1,
-            'data_y': (self.data_y or 0) + 1,
         }
         
         # Copy the record
