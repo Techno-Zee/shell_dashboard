@@ -82,6 +82,7 @@ export class ShellDashboard extends Component {
   async initializeDashboard() {
     this.state.loading = true;
     try {
+      this.orm.call("dashboard.block", "action_refresh_data");
       const actionId = this.props.action.id;
       const blocks = await this.orm.call(
         "dashboard.block",
@@ -89,7 +90,7 @@ export class ShellDashboard extends Component {
         [actionId],
       );
       // grid_position tidak lagi digunakan, tetapi tetap disimpan untuk keperluan lain
-      console.log(blocks);
+      // console.log(blocks);
       this.state.blocks = blocks;
     } catch (error) {
       console.error("Error initializing dashboard:", error);
@@ -265,18 +266,65 @@ export class ShellDashboard extends Component {
   }
 
   getDownRowColClass(block) {
-    // Jika block adalah chart, cek tipe chart dari config
-    if (block.type === "graph" && block.config && block.config.chart_type) {
-      const chartType = block.config.chart_type;
-      // Pie, donut, radar membutuhkan ruang lebih lebar (col-lg-5)
-      if (["pie", "doughnut", "radar"].includes(chartType)) {
-        return "col-lg-4 col-md-6 col-sm-12";
+    // Validasi input dan pastikan groupedBlocks.downRow tersedia
+    if (!block || !this.groupedBlocks?.downRow) return "col-12";
+    const blocks = this.groupedBlocks.downRow;
+    if (!Array.isArray(blocks) || blocks.length === 0) return "col-12";
+
+    // Cari indeks block saat ini
+    const currentIndex = blocks.findIndex((b) => b === block);
+    if (currentIndex === -1) return "col-12";
+
+    // Klasifikasikan tiap block: specialGraph (pie/doughnut/radar), graph biasa, atau table
+    const types = blocks.map((b) => {
+      if (b.type === "graph" && b.config?.chart_type) {
+        const chartType = b.config.chart_type;
+        if (["pie", "doughnut", "radar"].includes(chartType))
+          return "specialGraph";
+        return "graph";
       }
-      // Bar, line, dan lainnya bisa col-lg-6
+      return "table";
+    });
+
+    const total = blocks.length;
+
+    // Aturan 1: 1 specialGraph + 1 table → specialGraph col-4, table col-8
+    if (
+      total === 2 &&
+      types.filter((t) => t === "specialGraph").length === 1 &&
+      types.filter((t) => t === "table").length === 1
+    ) {
+      return types[currentIndex] === "specialGraph"
+        ? "col-lg-4 col-md-6 col-sm-12"
+        : "col-lg-8 col-md-6 col-sm-12";
+    }
+
+    // Aturan 2: 2 table → masing-masing col-6
+    if (total === 2 && types.every((t) => t === "table")) {
       return "col-lg-6 col-md-6 col-sm-12";
     }
-    // Untuk table (list) atau tipe lain, berikan kelas default yang cukup
-    return "col-lg-8 col-md-6 col-sm-12";
+
+    // Aturan 3: 2 graph (apa saja) + 1 table → graph col-6, table col-12 (turun baris)
+    if (
+      total === 3 &&
+      types.filter((t) => t === "graph" || t === "specialGraph").length === 2 &&
+      types.includes("table")
+    ) {
+      if (types[currentIndex] === "table") {
+        return "col-lg-12 col-md-12 col-sm-12";
+      } else {
+        return "col-lg-6 col-md-6 col-sm-12";
+      }
+    }
+
+    // Aturan umum: bagi rata per baris, maksimal 3 komponen per baris
+    const maxPerRow = 3;
+    const groupIndex = Math.floor(currentIndex / maxPerRow);
+    const startIdx = groupIndex * maxPerRow;
+    const endIdx = Math.min(startIdx + maxPerRow, total);
+    const itemsInGroup = endIdx - startIdx;
+    const colNumber = 12 / itemsInGroup; // hasilnya 12, 6, atau 4
+    return `col-lg-${colNumber} col-md-${colNumber} col-sm-12`;
   }
 
   resolveComponent(type) {
