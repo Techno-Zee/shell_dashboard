@@ -218,7 +218,54 @@ class DashboardBlock(models.Model):
             if result:
                 return result[0].get(f'{operation}_{measured_field}', 0.0)
         return 0.0
-    
+
+    @api.model
+    def get_table_data_paginated(self, block_id, offset=0, limit=None):
+        """
+        Ambil data tabel untuk block tertentu dengan pagination.
+        :param block_id: ID dashboard.block
+        :param offset: jumlah record yang dilewati
+        :param limit: jumlah record yang diambil (default = table_limit dari block)
+        :return: dict berisi rows, total, columns, limit, offset
+        """
+        block = self.browse(block_id).exists()
+        if not block or block.type != 'list':
+            return {'error': 'Block not found or not a table'}
+
+        if limit is None:
+            limit = block.table_limit or 10
+
+        try:
+            model = self.env[block.model_name]
+            domain = block._parse_domain(block.filter) if block.filter else []
+            fields = block.tag_fields_ids.mapped('name')
+
+            if not fields:
+                return {'error': 'No columns selected for table'}
+
+            # Ambil total record (untuk kebutuhan pagination)
+            total = model.search_count(domain)
+
+            # Ambil data dengan offset & limit
+            records = model.search_read(
+                domain=domain,
+                fields=fields,
+                limit=limit,
+                offset=offset,
+                order='id desc'
+            )
+
+            return {
+                'rows': records,
+                'total': total,
+                'columns': fields,
+                'limit': limit,
+                'offset': offset,
+            }
+        except Exception as e:
+            _logger.error("Error in get_table_data_paginated: %s", e)
+            return {'error': str(e)}
+
     # ==== COMPUTED FIELDS ====
     @api.depends('measured_field_id', 'operation', 'filter', 'model_name', 'group_by_id')
     def _compute_record_value(self):

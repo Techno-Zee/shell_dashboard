@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
     <t t-name="shell_dashboard.DashboardTile" owl="1">
-        <div class="card w-100">
+        <div t-if="env.isSmall" class="text-min">
+            <div t-att-style="'color: ' + props.block.config.colors.text" class="fwt-black">
+                <t t-esc="props.block.data.formatted_value" />
+            </div>
+            <span class="small text-muted" t-esc="formatTwoWords(props.block.name)" />
+        </div>
+        <div t-else="" class="card w-100">
             <!-- Body dengan background dinamis -->
             <div  class="card-body p-3 d-flex align-items-center" style="position: relative;">
                 <button t-on-click="configureBlock" class="btn btn-light btn-setting" type="button">
