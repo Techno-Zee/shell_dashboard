@@ -90,7 +90,7 @@ export class ShellDashboard extends Component {
         [actionId],
       );
       // grid_position tidak lagi digunakan, tetapi tetap disimpan untuk keperluan lain
-      // console.log(blocks);
+      console.log("Block",blocks);
       this.state.blocks = blocks;
     } catch (error) {
       console.error("Error initializing dashboard:", error);
@@ -110,7 +110,7 @@ export class ShellDashboard extends Component {
     if (type === "tile") {
       context.default_fa_icon = "fa fa-cube";
     } else if (type === "kpi") {
-      context.default_fa_icon = "fa fa-chart-line";
+      context.default_fa_icon = "fa fa-line-chart";
     } else if (type === "graph") {
       context.default_graph_type = chartType || "bar";
       context.default_fa_icon = `fa fa-${chartType || "bar"}-chart`;

@@ -19,7 +19,7 @@
                              onToggleAutoRefresh="() => toggleAutoRefresh()"
                              onRefresh="() => refreshDashboard()"/>
             <!-- Konten dashboard -->
-            <div class="dashboard-content row overflow-auto p-3">
+            <div class="dashboard-content row overflow-auto p-3 pb-5">
                 <!-- BARIS ATAS: TILE & KPI -->
                 <t t-if="groupedBlocks.topRow.length" >
                     <div t-foreach="groupedBlocks.topRow" t-as="block" t-key="block.id" t-attf-class="#{getTopRowColClass()}">
