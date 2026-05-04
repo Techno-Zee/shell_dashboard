@@ -40,7 +40,6 @@ export class DashboardKPI extends Component {
                 "shell_dashboard.KPILinearProgress": "kpi_linear_progress",
             };
             this.state.KPITheme = themeMap[templateXml] || "kpi_ring_progress";
-            console.log("KPI theme loaded:", this.state.KPITheme);
         } catch (error) {
             console.error("Error loading KPI theme:", error);
             this.state.KPITheme = "kpi_ring_progress";

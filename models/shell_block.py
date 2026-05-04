@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from ast import literal_eval
 from odoo import api, fields, models
+from dateutil.relativedelta import relativedelta
 from odoo.osv import expression
 import logging
 import random
@@ -121,7 +122,7 @@ class DashboardBlock(models.Model):
     )
     fa_color = fields.Char(
         string="Icon Color", 
-        default="#000000", 
+        default="#495057", 
         help='Icon Color'
     )
 
@@ -176,6 +177,47 @@ class DashboardBlock(models.Model):
         compute='_compute_last_update', 
         store=True
     )
+    # di class DashboardBlock
+    trend_date_field_id = fields.Many2one(
+        'ir.model.fields',
+        string='Date Field for Trend',
+        domain="[('model_id','=',model_id), ('ttype','in',['date','datetime']), ('store','=',True)]",
+        help="Field yang digunakan untuk menghitung periode sebelumnya (create_date jika kosong)"
+    )
+
+    def _get_previous_period_value(self, model, domain, operation, measured_field, trend_period, date_field='create_date'):
+        """Hitung nilai agregasi untuk periode sebelumnya berdasarkan trend_period"""
+        
+        
+        now = fields.Datetime.now()
+        if trend_period == 'day':
+            prev_start = now - relativedelta(days=1)
+            prev_end = now
+        elif trend_period == 'week':
+            prev_start = now - relativedelta(weeks=1)
+            prev_end = now
+        elif trend_period == 'month':
+            prev_start = now - relativedelta(months=1)
+            prev_end = now
+        elif trend_period == 'year':
+            prev_start = now - relativedelta(years=1)
+            prev_end = now
+        else:
+            return 0.0
+        
+        # Buat domain periode sebelumnya (asumsi date_field ada di model)
+        prev_domain = domain + [(date_field, '>=', prev_start), (date_field, '<', prev_end)]
+        
+        if operation == 'count':
+            return model.search_count(prev_domain)
+        else:
+            if not measured_field:
+                return 0.0
+            agg_field = f'{operation}:{measured_field}'
+            result = model.read_group(prev_domain, [agg_field], [], limit=1)
+            if result:
+                return result[0].get(f'{operation}_{measured_field}', 0.0)
+        return 0.0
     
     # ==== COMPUTED FIELDS ====
     @api.depends('measured_field_id', 'operation', 'filter', 'model_name', 'group_by_id')
@@ -417,7 +459,7 @@ class DashboardBlock(models.Model):
             elif rec.type == 'graph':
                 return self._get_chart_data(rec, target_model, domain)
             else:  # tile/kpi
-                return self._get_tile_data(rec, target_model, domain)
+                return self._get_tile_data(rec, target_model, domain, start_date, end_date)
                 
         except Exception as e:
             _logger.error("Error getting data for block %s: %s", rec.name, e)
@@ -497,27 +539,49 @@ class DashboardBlock(models.Model):
             _logger.error("Error in _get_chart_data: %s", e)
             return {'error': str(e)}
         
-    def _get_tile_data(self, rec, model, domain):
-        """Get tile/KPI data"""
+    def _get_tile_data(self, rec, model, domain, start_date=None, end_date=None):
         try:
             current_value = rec.record_value
             target_value = rec.target_value
             
-            # Calculate achievement percentage
+            # Hitung achievement
             achievement = 0
             if target_value != 0:
                 achievement = (current_value / target_value) * 100
             
-            # Format numbers
-            formatted_value = self._format_number(current_value)
-            formatted_target = self._format_number(target_value) if target_value != 0 else "0"
+            # --- Trend & previous period ---
+            trend = None
+            trend_direction = 'neutral'
+            if rec.show_trend:
+                # Tentukan field tanggal (pakai create_date jika tidak ada setting)
+                date_field = rec.trend_date_field_id.name if rec.trend_date_field_id else 'create_date'
+                if date_field in model._fields:
+                    prev_value = self._get_previous_period_value(
+                        model, domain, rec.operation,
+                        rec.measured_field_id.name if rec.measured_field_id else None,
+                        rec.trend_period,
+                        date_field
+                    )
+                    if prev_value and prev_value != 0:
+                        trend = ((current_value - prev_value) / prev_value) * 100
+                        trend_direction = 'up' if trend > 0 else 'down' if trend < 0 else 'neutral'
+                    else:
+                        trend = 0.0
+                else:
+                    _logger.warning(f"Date field {date_field} not found in model {rec.model_name}")
+            
+            # Secondary value (contoh: pakai target_value atau bisa diisi field lain)
+            secondary_value = rec.target_value if rec.type == 'tile' else 0
             
             return {
                 'value': current_value,
-                'formatted_value': formatted_value,
+                'formatted_value': self._format_number(current_value),
                 'target_value': target_value,
-                'formatted_target': formatted_target,
-                'achievement': round(achievement, 2)
+                'formatted_target': self._format_number(target_value) if target_value else '0',
+                'achievement': round(achievement, 2),
+                'trend': round(trend, 2) if trend is not None else None,
+                'trend_direction': trend_direction,
+                'secondary_value': self._format_number(secondary_value)
             }
         except Exception as e:
             _logger.error("Error calculating tile data: %s", e)
