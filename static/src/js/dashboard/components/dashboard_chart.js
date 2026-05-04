@@ -53,7 +53,6 @@ export class DashboardChart extends Component {
 
         const ctx = this.chartCanvas.el.getContext('2d');
         const block = this.props.block;
-        console.log('block :', block);
 
         // Prepare chart data
         const chartData = {
