@@ -18,20 +18,43 @@
                              refreshCountdown="state.refreshCountdown"
                              onToggleAutoRefresh="() => toggleAutoRefresh()"
                              onRefresh="() => refreshDashboard()"/>
+            
             <!-- Konten dashboard -->
             <div class="dashboard-content row overflow-auto p-3 pb-5">
                 <!-- BARIS ATAS: TILE & KPI -->
-                <t t-if="groupedBlocks.topRow.length" >
-                    <div t-foreach="groupedBlocks.topRow" t-as="block" t-key="block.id" t-attf-class="#{getTopRowColClass()}">
-                        <t t-component="resolveComponent(block.type)" block="block"/>
-                    </div>
+                <t t-if="groupedBlocks.topRow.length">
+                    <!-- Tampilan mobile (card horizontal) -->
+                    <t t-if="env.isSmall">
+                        <div class="card col-12">
+                            <div class="card-body d-flex flex-wrap">
+                                <t t-foreach="groupedBlocks.topRow" t-as="block" t-key="block.id">
+                                    <div class="flex-grow-1">
+                                        <t t-component="resolveComponent(block.type)" block="block"/>
+                                    </div>
+                                    <div t-if="!block_last" class="vr mx-2"></div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                    <!-- Tampilan desktop (grid) -->
+                    <t t-else="">
+                        <t t-foreach="groupedBlocks.topRow" t-as="block" t-key="block.id">
+                            <div t-att-class="getTopRowColClass()">
+                                <t t-component="resolveComponent(block.type)" block="block"/>
+                            </div>
+                        </t>
+                    </t>
                 </t>
-                <!-- BARIS GRAFIK TABEL-->
-                <t t-if="groupedBlocks.downRow.length" >
-                    <div t-foreach="groupedBlocks.downRow" t-as="block" t-key="block.id" t-attf-class="#{getDownRowColClass(block)}">
-                        <t t-component="resolveComponent(block.type)" block="block"/>
-                    </div>
+                
+                <!-- BARIS BAWAH: GRAFIK & TABEL -->
+                <t t-if="groupedBlocks.downRow.length">
+                    <t t-foreach="groupedBlocks.downRow" t-as="block" t-key="block.id">
+                        <div t-att-class="getDownRowColClass(block)">
+                            <t t-component="resolveComponent(block.type)" block="block"/>
+                        </div>
+                    </t>
                 </t>
+                
                 <!-- Loading overlay -->
                 <div t-if="state.loading" class="loading-overlay">
                     <i class="fa fa-spinner fa-spin fa-2x text-primary"/>

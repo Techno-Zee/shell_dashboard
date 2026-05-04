@@ -23,7 +23,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-foreach="props.block.data.rows" t-as="row" t-key="row_index">
+                            <t t-foreach="state.rows" t-as="row" t-key="row.id">
                                 <tr t-on-click="(ev) => openRecord(row)">
                                     <t t-foreach="props.block.data.columns" t-as="colName" t-key="colName_index">
                                         <td class="text-nowrap">
@@ -46,21 +46,42 @@
             <!-- Table Footer -->
             <div class="table-footer px-3 py-2 border-top">
                 <div class="d-flex justify-content-between align-items-center small">
-                    <span>
-                        Showing
-                        <t t-esc="props.block.data.rows.length" />
-                        of
-                        <t t-esc="props.block.data.total" />
-                        records
-                    </span>
-                    <t t-if="props.block.data.rows.length >= props.block.config.limit">
-                        <span class="text-warning">
-                            <i class="fa fa-info-circle me-1" />
-                            Limited to
-                            <t t-esc="props.block.config.limit" />
-                            rows
-                        </span>
-                    </t>
+                    <div>
+            Showing
+                        <t t-esc="state.rows.length" />
+            of
+                        <t t-esc="state.total" />
+            records
+                    </div>
+                    <div t-if="state.paginationEnabled">
+                        <t t-if="state.loading">
+                            <i class="fa fa-spinner fa-spin me-1" /> Loading...
+                        </t>
+                        <t t-else="">
+                            <ul class="pagination pagination-sm mb-0">
+                                <!-- Previous -->
+                                <li t-att-class="'page-item ' + (state.currentPage === 1 ? 'disabled' : '')">
+                                    <a class="page-link" href="#" t-on-click.prevent="() => goToPage(state.currentPage - 1)">
+                                        <i class="fa fa-chevron-left" />
+                                    </a>
+                                </li>
+                                <!-- Page numbers -->
+                                <t t-foreach="visiblePages" t-as="page" t-key="page">
+                                    <li t-att-class="'page-item ' + (state.currentPage === page ? 'active' : '')">
+                                        <a class="page-link" href="#" t-on-click.prevent="() => goToPage(page)">
+                                            <t t-esc="page" />
+                                        </a>
+                                    </li>
+                                </t>
+                                <!-- Next -->
+                                <li t-att-class="'page-item ' + (state.currentPage === totalPages ? 'disabled' : '')">
+                                    <a class="page-link" href="#" t-on-click.prevent="() => goToPage(state.currentPage + 1)">
+                                        <i class="fa fa-chevron-right" />
+                                    </a>
+                                </li>
+                            </ul>
+                        </t>
+                    </div>
                 </div>
             </div>
         </div>

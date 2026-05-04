@@ -79,6 +79,8 @@ export class ShellDashboard extends Component {
     });
   }
 
+ 
+
   async initializeDashboard() {
     this.state.loading = true;
     try {
@@ -90,7 +92,7 @@ export class ShellDashboard extends Component {
         [actionId],
       );
       // grid_position tidak lagi digunakan, tetapi tetap disimpan untuk keperluan lain
-      console.log("Block",blocks);
+      console.log("Block", blocks);
       this.state.blocks = blocks;
     } catch (error) {
       console.error("Error initializing dashboard:", error);

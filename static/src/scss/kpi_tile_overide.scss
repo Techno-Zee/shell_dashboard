@@ -30,7 +30,6 @@
   transition: stroke-dashoffset 0.4s ease;
 }
 
-
 /* --- 3. Penyesuaian badge trend agar lebih rapi --- */
 .badge i.fa,
 .badge i.fas {
@@ -54,12 +53,12 @@
   font-size: 3rem;
 }
 
-.btn-setting{
-    opacity: 0;
-    position: absolute;
-    z-index: 2;
-    top: 5px;
-    right: 5px;
+.btn-setting {
+  opacity: 0;
+  position: absolute;
+  z-index: 2;
+  top: 5px;
+  right: 5px;
 }
 
 /* --- 6. Agar ikon di tile tidak terlalu besar --- */
@@ -79,4 +78,23 @@
 .bg-dark .card-body,
 [style*="background-color: #212529"] .card-body {
   color: #f8f9fa;
+}
+@media (max-width: 700px) {
+  .text-min {
+    text-align: center;
+    width: fit-content;
+    padding: 0 10px;
+
+    .small {
+      /* Batasi lebar maksimum agar teks hanya muat sekitar 2 kata */
+      max-width: 96px; /* sesuaikan dengan font-size */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+  }
+  .fwt-black {
+    font-size: 30px;
+  }
 }

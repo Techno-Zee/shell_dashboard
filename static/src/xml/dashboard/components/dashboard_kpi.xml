@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
     <t t-name="shell_dashboard.DashboardKPI" owl="1">
-        <div t-if="env.isSmall">Mobile</div>
+        <div t-if="env.isSmall" class="text-center w-fit">
+            <div class="fwt-black" t-att-style="'color:' + props.block.config.colors.text">
+                <t t-esc="props.block.data.formatted_value" />
+            </div>
+            <span class="small text-muted" t-esc="formatTwoWords(props.block.name)" />
+        </div>
         <div t-else="" class="card">
             <div class="card-body px-3 position-relative">
                 <!-- Tombol setting di pojok kanan atas -->
