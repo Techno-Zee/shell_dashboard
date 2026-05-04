@@ -1,7 +1,4 @@
 # Shell Dashboard
-<div align="center">
-  <img src="https://raw.githubusercontent.com/techno-zee/shell_dashboard/main/assets/img/ShellDashboard.png" alt="Shell Dashboard Banner" width="800">
-</div>
 <p align="center">
   <img src="static/description/scallop.png" width="80" />
 </p>
